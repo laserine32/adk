@@ -86,9 +86,9 @@ export const POST = async (request) => {
 		// console.log(TagsKomik)
 		// console.log(Pages)
 
-		komikModel.add(Komik)
-		tagsModel.addBulk(Tags)
-		tagsKomikModel.addBulk(TagsKomik)
+		await komikModel.add(Komik)
+		await tagsModel.addBulk(Tags)
+		await tagsKomikModel.addBulk(TagsKomik)
 
 		const ret = {
 			media_server: media_server,

@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Komik {
+  id             Int           @id
+  title          String        @default("")
+  japanese_title String        @default("")
+  pretty_title   String        @default("")
+  images         String        @default("")
+  cover          String        @default("")
+  upload_date    Int           @default(0)
+  num_pages      Int           @default(0)
+  num_favorites  Int           @default(0)
+  date           DateTime      @default(now())
+  tags           TagsOnKomik[]
+  pages          Pages[]
+}
+
+model Tags {
+  id    Int           @id
+  type  String
+  name  String
+  komik TagsOnKomik[]
+}
+
+model TagsOnKomik {
+  komik   Komik @relation(fields: [komikId], references: [id])
+  komikId Int
+  tags    Tags  @relation(fields: [tagsId], references: [id])
+  tagsId  Int
+
+  @@id([komikId, tagsId])
+}
+
+model Pages {
+  id      String @id @default(cuid())
+  komikId Int
+  img     String
+  num     Int
+  Komik   Komik  @relation(fields: [komikId], references: [id])
+}

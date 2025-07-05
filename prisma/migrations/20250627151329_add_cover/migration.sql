@@ -1,0 +1,9 @@
+-- AlterTable
+ALTER TABLE "Komik" ADD COLUMN     "cover" TEXT NOT NULL DEFAULT '',
+ALTER COLUMN "title" SET DEFAULT '',
+ALTER COLUMN "japanese_title" SET DEFAULT '',
+ALTER COLUMN "pretty_title" SET DEFAULT '',
+ALTER COLUMN "images" SET DEFAULT '',
+ALTER COLUMN "upload_date" SET DEFAULT 0,
+ALTER COLUMN "num_pages" SET DEFAULT 0,
+ALTER COLUMN "num_favorites" SET DEFAULT 0;

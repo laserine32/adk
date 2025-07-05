@@ -24,7 +24,7 @@ const ViewManga = ({ komik }) => {
 			</div>
 			<div className="flex flex-col justify-center items-center">
 				{data.pages.map((e) => (
-					<LazyImage src={e.img} key={e.id} alt={e.num} />
+					<LazyImage src={e.img} key={e.id} alt={e.num} className="w-full" />
 				))}
 			</div>
 			<ReaderNav data={nav} />
@@ -35,8 +35,8 @@ const ViewManga = ({ komik }) => {
 const Tag = ({ data }) => {
 	return (
 		<>
-			<Link href={"/"}>
-				<div className="rounded bg-input px-4 py-1">{data.name}</div>
+			<Link href={`/tags/${data.id}`}>
+				<div className="rounded bg-input px-4 py-1 cursor-pointer hover:bg-input/50">{data.name}</div>
 			</Link>
 		</>
 	)

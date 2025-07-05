@@ -81,19 +81,18 @@ export const POST = async (request) => {
 			})
 		}
 
-		console.log(Komik)
-		console.log(Tags)
-		console.log(TagsKomik)
-		console.log(Pages)
+		// console.log(Komik)
+		// console.log(Tags)
+		// console.log(TagsKomik)
+		// console.log(Pages)
 
+		komikModel.add(Komik)
 		tagsModel.addBulk(Tags)
 		tagsKomikModel.addBulk(TagsKomik)
-		komikModel.add(Komik)
 
 		const ret = {
 			media_server: media_server,
 			jsdata: jsdata,
-			html: htmlContent,
 		}
 		const data = {
 			message: JSON.stringify(ret),

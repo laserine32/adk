@@ -96,7 +96,8 @@ class DataModel {
 				conf.where = { ...conf.where, ...this.config.filter }
 			}
 			if (this.config.orderBy) {
-				conf.orderBy = { ...conf.orderBy, ...this.config.orderBy }
+				// conf.orderBy = { ...conf.orderBy, ...this.config.orderBy }
+				conf.orderBy = this.config.orderBy
 			}
 			if (this.config.include) {
 				conf.include = this.config.include

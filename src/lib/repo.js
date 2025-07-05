@@ -51,5 +51,11 @@ pageModel.getPageData = async function (id) {
 	}
 }
 
-export const tagsModel = new DataModel(prisma.tags, "tags", {})
+export const tagsModel = new DataModel(prisma.tags, "tags", {
+	orderBy: [
+		{
+			name: "asc",
+		},
+	],
+})
 export const tagsKomikModel = new DataModel(prisma.TagsOnKomik, "TagsOnKomik", {})

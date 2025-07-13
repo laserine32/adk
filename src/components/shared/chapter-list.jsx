@@ -14,8 +14,7 @@ const ChapterList = ({ data }) => {
 }
 
 const Card = ({ data }) => {
-	const imgsrc = data.cover //data.poster ? data.poster : data.thumb
-	// const imgsrc = "https://raw.githubusercontent.com/laserine32/iatnehn/master/data/98330d/02.webp"
+	const imgsrc = data.cover
 	const linkhref = `/view/${data.id}`
 	return (
 		<>
@@ -24,10 +23,10 @@ const Card = ({ data }) => {
 					<Link href={`${linkhref}`}>
 						<LazyImage
 							src={imgsrc}
-							className="h-full w-auto object-cover transition-all duration-200 ease-in-out group-hover:scale-125 group-hover:blur-sm"
+							className="h-full w-full object-cover transition-all duration-200 ease-in-out group-hover:scale-125 group-hover:blur-sm"
 						/>
-						<div className="absolute left-0 top-0 hidden h-full w-full items-center justify-center bg-black/50 text-white transition-all duration-1000 ease-in-out group-hover:flex">
-							{/* <PiBookOpenTextDuotone size={56} /> */}
+						<div className="absolute right-2 bottom-2 bg-green-600 px-4 rounded">
+							<p className="text-xs">{`${data.num_pages} Pages`}</p>
 						</div>
 					</Link>
 				</div>
@@ -45,18 +44,3 @@ const Card = ({ data }) => {
 }
 
 export default ChapterList
-
-/* 
-
-						<img
-							src={imgsrc}
-							width={126}
-							height={196}
-							alt={data.id}
-							// placeholder="blur"
-							// blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAgAB/0z6RAAAAABJRU5ErkJggg=="
-							// loading="lazy"
-							className="h-full w-auto object-cover transition-all duration-200 ease-in-out group-hover:scale-125 group-hover:blur-sm"
-						/>
-
-*/

@@ -8,7 +8,7 @@ const ViewManga = ({ komik }) => {
 	const { data, nav } = komik
 	return (
 		<>
-			<div className="my-4 grid grid-cols-2 gap-4 bg-border rounded p-4">
+			<div className="my-4 grid grid-cols-1 md:grid-cols-2 gap-4 bg-border rounded p-4">
 				<div className="flex items-center justify-center">
 					<img src={data.cover} className="w-1/2" />
 				</div>

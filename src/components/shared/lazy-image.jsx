@@ -16,7 +16,7 @@ const LazyImage = ({ src, ...props }) => {
 					observer.unobserve(containerRef.current)
 				}
 			},
-			{ rootMargin: "0px" }
+			{ rootMargin: "30px" }
 		)
 
 		if (containerRef.current) {
@@ -39,7 +39,6 @@ const LazyImage = ({ src, ...props }) => {
 					className={cn(isLoaded ? "visible" : "hidden", props.className)}
 					{...props}
 				/>
-				{/* {!isLoaded && <div className="absolute top-0 left-0 w-full h-full bg-input" />} */}
 			</div>
 		</>
 	)

@@ -17,7 +17,7 @@ const Home = async ({ searchParams }) => {
 				<FireIcon className="w-6 text-red-500" />
 				<h1 className="text-2xl font-bold">Home</h1>
 			</div>
-			<div className="my-8 grid grid-cols-3 gap-4 md:grid-cols-6 md:gap-6">
+			<div className="my-8 grid grid-cols-1 gap-4 md:grid-cols-6 md:gap-6">
 				<Suspense key={query + currentPage} fallback={<SkeletonKomik />}>
 					<ChapterList data={data} />
 				</Suspense>

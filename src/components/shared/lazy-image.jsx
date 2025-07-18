@@ -16,7 +16,10 @@ const LazyImage = ({ src, ...props }) => {
 					observer.unobserve(containerRef.current)
 				}
 			},
-			{ rootMargin: "30px" }
+			{
+				threshold: 0,
+				rootMargin: "10px 1px 1500px 1px",
+			}
 		)
 
 		if (containerRef.current) {

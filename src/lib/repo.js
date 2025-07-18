@@ -2,6 +2,9 @@ import DataModel from "./DataModel"
 import prisma from "./prisma"
 
 export const komikModel = new DataModel(prisma.komik, "manga", {
+	include: {
+		tags: { include: { tags: true }, orderBy: { tags: { type: "asc" } } },
+	},
 	orderBy: [
 		{
 			date: "desc",
@@ -58,4 +61,9 @@ export const tagsModel = new DataModel(prisma.tags, "tags", {
 		},
 	],
 })
+tagsModel.getForPage = async function () {
+	const data = await this.getAll()
+	const groupedByCategory = Object.groupBy(data, (e) => e.type)
+	return groupedByCategory
+}
 export const tagsKomikModel = new DataModel(prisma.TagsOnKomik, "TagsOnKomik", {})

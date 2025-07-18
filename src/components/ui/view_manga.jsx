@@ -2,6 +2,7 @@ import { unicodeToChar } from "@/lib/utils"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ListBulletIcon } from "@heroicons/react/24/outline"
+import ListLazyImage from "../shared/list-lazy-image"
 import LazyImage from "../shared/lazy-image"
 
 const ViewManga = ({ komik }) => {
@@ -24,8 +25,9 @@ const ViewManga = ({ komik }) => {
 			</div>
 			<div className="flex flex-col justify-center items-center">
 				{data.pages.map((e) => (
-					<LazyImage src={e.img} key={e.id} alt={e.num} className="w-full" />
+					<LazyImage src={e.img} key={e.id} alt={e.num} className="w-full mb-1" />
 				))}
+				{/* <ListLazyImage images={data.pages} /> */}
 			</div>
 			<ReaderNav data={nav} />
 		</>

@@ -22,7 +22,7 @@ const TagsPageId = async ({ params, searchParams }) => {
 	const currentPage = Number(csp?.page) || 1
 	const where = { tags: { some: { tags: { id: Number(id) } } } }
 	const data = await komikModel.getSearchPaginWhere(where, query, currentPage, {})
-	const totalPage = await komikModel.getPage(query)
+	const totalPage = await komikModel.getPageWhere(where, query)
 	console.log(query)
 	return (
 		<>
@@ -30,7 +30,7 @@ const TagsPageId = async ({ params, searchParams }) => {
 				<FireIcon className="w-6 text-red-500" />
 				<h1 className="text-2xl font-bold">{tag.name}</h1>
 			</div>
-			<div className="my-8 grid grid-cols-3 gap-4 md:grid-cols-6 md:gap-6">
+			<div className="my-8 grid grid-cols-1 gap-4 md:grid-cols-6 md:gap-6">
 				<Suspense key={query + currentPage} fallback={<SkeletonKomik />}>
 					<ChapterList data={data} />
 				</Suspense>

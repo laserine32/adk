@@ -1,4 +1,4 @@
-import { unicodeToChar } from "@/lib/utils"
+import { capitalizeFirstLetter, unicodeToChar } from "@/lib/utils"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ListBulletIcon } from "@heroicons/react/24/outline"
@@ -7,6 +7,10 @@ import LazyImage from "../shared/lazy-image"
 
 const ViewManga = ({ komik }) => {
 	const { data, nav } = komik
+	const ptags = data.tags.flatMap((e) => e.tags)
+	const gtags = Object.groupBy(ptags, (e) => e.type)
+	// console.log(ptags)
+	// console.log(gtags)
 	return (
 		<>
 			<div className="my-4 grid grid-cols-1 md:grid-cols-2 gap-4 bg-border rounded p-4">
@@ -16,10 +20,8 @@ const ViewManga = ({ komik }) => {
 				<div>
 					<h1 className="text-xl font-bold text-foreground mb-6">{data.title}</h1>
 					<h3 className=" mb-6 text-foreground">{unicodeToChar(data.japanese_title)}</h3>
-					<div className="my-4 flex gap-2 w-full flex-wrap">
-						{data.tags.map((tag) => (
-							<Tag key={tag.tagsId} data={tag.tags} />
-						))}
+					<div className="my-4 flex-row w-full">
+						<RenderTags data={ptags} />
 					</div>
 				</div>
 			</div>
@@ -30,6 +32,30 @@ const ViewManga = ({ komik }) => {
 				{/* <ListLazyImage images={data.pages} /> */}
 			</div>
 			<ReaderNav data={nav} />
+		</>
+	)
+}
+
+const RenderTags = ({ data }) => {
+	const items = Object.groupBy(data, (e) => e.type)
+	let elm = []
+	for (let e in items) {
+		elm.push(<TagsRender key={e} title={capitalizeFirstLetter(e)} data={items[e]} />)
+	}
+	return <>{elm.map((e) => e)}</>
+}
+
+const TagsRender = ({ title, data }) => {
+	return (
+		<>
+			<div className="my-2 flex gap-2">
+				<h3>{title}</h3>
+				<div className="flex gap-2 flex-wrap">
+					{data.map((tag) => (
+						<Tag key={tag.id} data={tag} />
+					))}
+				</div>
+			</div>
 		</>
 	)
 }

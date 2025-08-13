@@ -33,24 +33,33 @@ export const pageModel = new DataModel(prisma.komik, "komik_pages", {
 	],
 })
 pageModel.getPageData = async function (id) {
-	const rawData = await this.get(id)
-	const dataAllChapter = await this.tbl.findMany({
-		select: {
-			id: true,
-		},
-		orderBy: [
-			{
-				date: "desc",
+	try {
+		const rawData = await this.get(id)
+		const dataAllChapter = await this.tbl.findMany({
+			select: {
+				id: true,
 			},
-		],
-	})
-	const allChapter = dataAllChapter.map((e) => ({ ...e, link: `/view/${e.id}` }))
-	const index = allChapter.findIndex((e) => e.id === id)
-	const prev = index === 0 ? "" : allChapter[index - 1].link
-	const next = index === allChapter.length - 1 ? "" : allChapter[index + 1].link
-	return {
-		data: rawData,
-		nav: { prev, next, current: id, list: "/" },
+			orderBy: [
+				{
+					date: "desc",
+				},
+			],
+		})
+		const allChapter = dataAllChapter.map((e) => ({ ...e, link: `/view/${e.id}` }))
+		const index = allChapter.findIndex((e) => e.id === id)
+		const prev = index === 0 ? "" : allChapter[index - 1].link
+		const next = index === allChapter.length - 1 ? "" : allChapter[index + 1].link
+		return {
+			data: rawData,
+			nav: { prev, next, current: id, list: "/" },
+		}
+	} catch (error) {
+		console.log(error.message)
+		// throw new Error(`Failed to get '${this.name}' data.`)
+		return {
+			data: [],
+			nav: {},
+		}
 	}
 }
 

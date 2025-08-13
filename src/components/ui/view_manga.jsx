@@ -7,6 +7,13 @@ import LazyImage from "../shared/lazy-image"
 
 const ViewManga = ({ komik }) => {
 	const { data, nav } = komik
+	if (!data || data.length == 0) {
+		return (
+			<>
+				<h1>Something went wrong!</h1>
+			</>
+		)
+	}
 	const ptags = data.tags.flatMap((e) => e.tags)
 	const gtags = Object.groupBy(ptags, (e) => e.type)
 	// console.log(ptags)

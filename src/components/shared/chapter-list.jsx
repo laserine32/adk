@@ -9,7 +9,7 @@ const ChapterList = ({ data, isHome = true }) => {
 	const isMobile = useIsMobile()
 	let pathName = usePathname()
 	pathName = pathName == "/" ? "" : pathName
-	console.log(pathName)
+	// console.log(pathName)
 	return (
 		<>
 			{data.map((e) =>

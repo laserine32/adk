@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils"
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
+import Search from "../shared/search"
 
 const navigation = [
 	{ name: "Home", href: "/", current: true },
@@ -22,11 +23,11 @@ const Navbar = () => {
 								<XMarkIcon aria-hidden="true" className="hidden size-6 group-data-open:block" />
 							</DisclosureButton>
 						</div>
-						<div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-							<div className="flex shrink-0 items-center">
-								<img alt="ADK" src="/icon.png" className="h-8 w-auto" />
+						<div className="w-full flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+							<div className="flex shrink-0 items-center py-2">
+								<img alt="ADK" src="/adk01.png" className="h-8 w-auto" />
 							</div>
-							<div className="hidden sm:ml-6 sm:block">
+							<div className="hidden sm:ml-6 sm:block grow">
 								<div className="flex">
 									{navigation.map((item) => (
 										<a
@@ -39,6 +40,9 @@ const Navbar = () => {
 										</a>
 									))}
 								</div>
+							</div>
+							<div className="hidden sm:ml-6 sm:flex py-2">
+								<Search />
 							</div>
 						</div>
 					</div>

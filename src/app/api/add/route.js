@@ -27,29 +27,31 @@ function runMiddleware(req, middleware) {
 
 export const POST = async (request) => {
 	try {
-		await runMiddleware(request, corsMiddleware)
+		// await runMiddleware(request, corsMiddleware)
+		// const { url } = await request.json()
+		// if (!url) {
+		// 	return NextResponse.json({ message: "Url is required" }, { status: 400 })
+		// }
+		// try {
+		// 	new URL(url)
+		// } catch {
+		// 	return NextResponse.json({ message: "Invalid URL format" }, { status: 400 })
+		// }
+		// const response = await axios.get(url, {
+		// 	headers: {
+		// 		"User-Agent":
+		// 			"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+		// 	},
+		// })
+		// const htmlContent = response.data
+		// const msPattern = /media_server\:\s(\d+)/
+		// const jsPattern = /window\.\_gallery\s\=\sJSON\.parse\(\"(.*)\"/
+		// const media_server = msPattern.exec(htmlContent)[1]
+		// let jsdata = jsPattern.exec(htmlContent)[1]
+		// jsdata = jsdata.replace(/\\u([\dA-Fa-f]{4})/g, (_, code) => String.fromCharCode(parseInt(code, 16)))
 		const { url } = await request.json()
-		if (!url) {
-			return NextResponse.json({ message: "Url is required" }, { status: 400 })
-		}
-		try {
-			new URL(url)
-		} catch {
-			return NextResponse.json({ message: "Invalid URL format" }, { status: 400 })
-		}
-		const response = await axios.get(url, {
-			headers: {
-				"User-Agent":
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-			},
-		})
-		const htmlContent = response.data
-		const msPattern = /media_server\:\s(\d+)/
-		const jsPattern = /window\.\_gallery\s\=\sJSON\.parse\(\"(.*)\"/
-		const media_server = msPattern.exec(htmlContent)[1]
-		let jsdata = jsPattern.exec(htmlContent)[1]
-		jsdata = jsdata.replace(/\\u([\dA-Fa-f]{4})/g, (_, code) => String.fromCharCode(parseInt(code, 16)))
-		let meta = JSON.parse(jsdata)
+		const media_server = 2
+		let meta = JSON.parse(url)
 		let Pages = meta.images.pages.map((e, i) => genMediaUrl(media_server, meta.media_id, i + 1, e.t))
 		meta["pages"] = Pages
 		Pages = Pages.map((e, i) => ({ img: e, num: i }))
@@ -58,7 +60,7 @@ export const POST = async (request) => {
 			title: meta.title.english,
 			japanese_title: meta.title.japanese,
 			pretty_title: meta.title.pretty,
-			images: JSON.stringify(meta),
+			images: btoa(JSON.stringify(meta)),
 			cover: meta.pages[0],
 			upload_date: meta.upload_date,
 			num_pages: meta.num_pages,
@@ -90,12 +92,17 @@ export const POST = async (request) => {
 		await tagsModel.addBulk(Tags)
 		await tagsKomikModel.addBulk(TagsKomik)
 
+		// const ret = {
+		// 	media_server: media_server,
+		// 	jsdata: jsdata,
+		// }
 		const ret = {
-			media_server: media_server,
-			jsdata: jsdata,
+			komik: Komik,
+			tags: Tags,
+			tk: TagsKomik
 		}
 		const data = {
-			message: JSON.stringify(ret),
+			message: JSON.stringify(ret, null, 2),
 			url: url,
 		}
 		return NextResponse.json(data, { status: 200 })

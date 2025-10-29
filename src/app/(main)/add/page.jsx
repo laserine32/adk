@@ -16,7 +16,8 @@ const AddPage = () => {
 				body: JSON.stringify({ url: inputValue }),
 			})
 			const data = await response.json()
-			console.log(data)
+			// console.log(data)
+			// setResponseMessage(JSON.stringify(data, null, 2))
 			setResponseMessage(data.message)
 			setIsLoaded(false)
 		} catch {
@@ -31,7 +32,7 @@ const AddPage = () => {
 				<form className="flex flex-col justify-center" onSubmit={handleSubmit}>
 					<input
 						className="peer border border-input text-sm rounded-md block w-full p-2.5 outline-2 text-background"
-						placeholder="Input Url"
+						placeholder="JSON DATA"
 						value={inputValue}
 						onChange={(e) => setInputValue(e.target.value)}
 					/>

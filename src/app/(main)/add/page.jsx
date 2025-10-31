@@ -20,6 +20,7 @@ const AddPage = () => {
 			// setResponseMessage(JSON.stringify(data, null, 2))
 			setResponseMessage(data.message)
 			setIsLoaded(false)
+			setInputValue(``)
 		} catch {
 			setResponseMessage("Just Error")
 			setIsLoaded(false)

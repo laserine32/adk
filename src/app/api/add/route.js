@@ -55,12 +55,15 @@ export const POST = async (request) => {
 		let Pages = meta.images.pages.map((e, i) => genMediaUrl(media_server, meta.media_id, i + 1, e.t))
 		meta["pages"] = Pages
 		Pages = Pages.map((e, i) => ({ img: e, num: i }))
+		const utf8Bytes = new TextEncoder().encode(url);
+		const binaryString = String.fromCharCode(...utf8Bytes);
+		const bsnp = btoa(binaryString)
 		const Komik = {
 			id: meta.id,
 			title: meta.title.english,
 			japanese_title: meta.title.japanese,
 			pretty_title: meta.title.pretty,
-			images: btoa(JSON.stringify(meta)),
+			images: bsnp,
 			cover: meta.pages[0],
 			upload_date: meta.upload_date,
 			num_pages: meta.num_pages,

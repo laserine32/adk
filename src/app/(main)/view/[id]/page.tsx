@@ -12,7 +12,7 @@ export const generateMetadata = async ({
 }) => {
   const { id } = await params
   const data = await getKomik(Number(id))
-  const title = data.title
+  const title = data?.title ?? `Not Found`
   return {
     title: `${title}`,
   }

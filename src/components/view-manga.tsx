@@ -3,14 +3,15 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ListBulletIcon } from "@heroicons/react/24/outline"
 import LazyImage from "./lazy-image"
-import { KomikNav, KomikPage, TagsMinType } from "@/db/queries/komik"
+import { KomikPage, NavKomikPage, TagsMinType } from "@/db/queries/komik"
+import NotFound from "@/app/not-found"
 
 const ViewManga = ({ komik }: { komik:KomikPage}) => {
   const { data, nav } = komik
   if (!data) {
 		return (
 			<>
-				<h1>Something went wrong!</h1>
+				<NotFound withNav={false} />
 			</>
 		)
 	}
@@ -75,32 +76,32 @@ const Tag = ({ data }: { data:TagsMinType }) => {
 }
 
 
-const ReaderNav = ({ data }:{ data:KomikNav }) => {
+const ReaderNav = ({ data }:{ data:NavKomikPage }) => {
 	return (
 		<div className="sticky bottom-0">
 			<div className="grid grid-cols-3">
 				<Link
-					href={data.prev}
+					href={data?.prev ?? ``}
 					className={cn(
 						"linking rounded-l-md py-2.5 bg-dialect text-white flex justify-center items-center gap-2 hover:bg-muted",
-						!data.prev && "pointer-events-none"
+						!data?.prev && "pointer-events-none"
 					)}
 				>
 					<ChevronDoubleLeftIcon className="size-6" />
 					<p className="hidden md:block">Next Comic</p>
 				</Link>
 				<Link
-					href={data.list}
+					href={data?.list ?? ""}
 					className="linking py-2.5 bg-background text-primary-foreground flex justify-center items-center gap-2 hover:bg-muted"
 				>
 					<p className="hidden md:block">List Comic</p>
 					<ListBulletIcon className="size-6 block md:hidden" />
 				</Link>
 				<Link
-					href={data.next}
+					href={data?.next ?? ""}
 					className={cn(
 						"linking rounded-r-md py-2.5 bg-dialect text-white flex justify-center items-center gap-2 hover:bg-muted",
-						!data.next && "pointer-events-none"
+						!data?.next && "pointer-events-none"
 					)}
 				>
 					<p className="hidden md:block">Prev Comic</p>

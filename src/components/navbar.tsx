@@ -3,6 +3,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import Search from "./search"
 import Image from "next/image"
+import { Suspense } from "react"
 
 type navigationItemType = {
   name: string,
@@ -58,7 +59,9 @@ const Navbar = () => {
 								</div>
 							</div>
 							<div className="hidden sm:ml-6 sm:flex py-2">
-								<Search />
+								<Suspense fallback={null}>
+									<Search />
+								</Suspense>
 							</div>
 						</div>
 					</div>

@@ -209,7 +209,7 @@ export type KomikWithPage = {
   numPages: number
   tags: TagsMinType[],
   pages: PagesMinType[]
-}
+} | null
 
 export async function getRawKomikPage(id: number) {
   const rows = await db
@@ -306,7 +306,7 @@ export type NavKomikPage = {
   next: string
   current: string
   list: string
-}
+} | null
 
 export type KomikPage = {
   data: KomikWithPage
@@ -314,8 +314,6 @@ export type KomikPage = {
 }
 
 export async function getKomikPageTag(id: number, tagId: number = -1):Promise<KomikPage> {
-  console.log("get data")
-  console.time('selectMain')
   const mainWhere = tagId > 0 ? eq(tagsOnKomik.tagsId, tagId) : undefined
   const data = await db
     .select({
@@ -326,15 +324,12 @@ export async function getKomikPageTag(id: number, tagId: number = -1):Promise<Ko
     .where(mainWhere)
     .orderBy(desc(komik.numId))
   
-  console.timeEnd("selectMain")
-  console.time('nav')
   const tagLinkAddon = tagId > 0 ? `/tags/${tagId}` : ""
   const allChapter = data.map((e) => ({ ...e, link: `${tagLinkAddon}/view/${e.id}`}))
   const index = allChapter.findIndex((e) => e.id === id)
   const prev = index === 0 ? "" : allChapter[index - 1].link
   const next = index === allChapter.length - 1 ? "" : allChapter[index + 1].link
-  console.timeEnd("nav")
-  console.time('selectTag')
+
   const dataTags: TagsMinType[] = await db
     .select({
       id: tags.id,
@@ -345,8 +340,6 @@ export async function getKomikPageTag(id: number, tagId: number = -1):Promise<Ko
     .leftJoin(tagsOnKomik, eq(tagsOnKomik.tagsId, tags.id))
     .where(eq(tagsOnKomik.komikId, id))
   
-  console.timeEnd("selectTag")
-  console.time('selectPage')
   const dataPages: PagesMinType[] = await db
     .select({
       id: pages.id,
@@ -356,8 +349,7 @@ export async function getKomikPageTag(id: number, tagId: number = -1):Promise<Ko
     .from(pages)
     .where(eq(pages.komikId, id))
     .orderBy(pages.num)
-  console.timeEnd("selectPage")
-  console.time('compileData')
+
   const inikomik = data[index]
   const komikData: KomikWithPage = {
     id: inikomik.id,
@@ -370,8 +362,7 @@ export async function getKomikPageTag(id: number, tagId: number = -1):Promise<Ko
     tags: dataTags,
     pages: dataPages
   } 
-  console.timeEnd("compileData")
-  console.log("data ready")
+
   return {
     data: komikData,
     nav: { prev, next, current: `${id}`, list: tagId > 0 ? `/tags/${tagId}` : "/" }
@@ -392,24 +383,25 @@ async function getNavKomik(num_id: number){
 }
 
 export async function getKomikPage(id: number):Promise<KomikPage> {
-console.log("get data")
-  console.time('selectMain')
   const [data] = await db
     .select()
     .from(komik)
     .where(eq(komik.id, id))
     .orderBy(desc(komik.numId))
-  
-  console.timeEnd("selectMain")
-  console.time('nav')
+  if (!data) {
+    return {
+      data: null,
+      nav: null
+    }
+  }
+
   const num_id = data.numId
   const num_prev = num_id + 1
   const num_next = num_id - 1
 
   const prev = await getNavKomik(num_prev)
   const next = await getNavKomik(num_next)
-  console.timeEnd("nav")
-  console.time('selectTag')
+
   const dataTags: TagsMinType[] = await db
     .select({
       id: tags.id,
@@ -420,8 +412,6 @@ console.log("get data")
     .leftJoin(tagsOnKomik, eq(tagsOnKomik.tagsId, tags.id))
     .where(eq(tagsOnKomik.komikId, id))
   
-  console.timeEnd("selectTag")
-  console.time('selectPage')
   const dataPages: PagesMinType[] = await db
     .select({
       id: pages.id,
@@ -431,8 +421,7 @@ console.log("get data")
     .from(pages)
     .where(eq(pages.komikId, id))
     .orderBy(pages.num)
-  console.timeEnd("selectPage")
-  console.time('compileData')
+
   const inikomik = data
   const komikData: KomikWithPage = {
     id: inikomik.id,
@@ -445,8 +434,7 @@ console.log("get data")
     tags: dataTags,
     pages: dataPages
   } 
-  console.timeEnd("compileData")
-  console.log("data ready")
+
   return {
     data: komikData,
     nav: { prev, next, current: `${id}`, list: "/" }

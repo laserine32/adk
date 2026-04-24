@@ -5,6 +5,7 @@ import ChapterList from "@/components/chapter-list"
 import Pagination from "@/components/pagination"
 import SkeletonKomik from "@/components/skeleton-komik"
 import { FireIcon } from "@heroicons/react/24/solid"
+import { CDNType, getCDN } from '@/lib/nhapi';
 
 export const revalidate = 3600;
 
@@ -34,6 +35,7 @@ const TagsPageId = async ({ params, searchParams }: TagsPageIdProps): Promise<JS
   const tag = await getTags(Number(id))
   const data = await getKomikTaggetSearchPagin(Number(id), query, currentPage)
   const totalPage = await getKomikTagTotalPage(Number(id), query)
+	const image_cdn:CDNType = await getCDN()
   return (
     <>
     <div className="flex justify-center items-center gap-4">
@@ -42,7 +44,7 @@ const TagsPageId = async ({ params, searchParams }: TagsPageIdProps): Promise<JS
 			</div>
 			<div className="my-8 grid grid-cols-1 gap-4 md:grid-cols-6 md:gap-6">
 				<Suspense key={query + currentPage} fallback={<SkeletonKomik />}>
-					<ChapterList data={data} />
+					<ChapterList data={data} image_cdn={image_cdn} />
 				</Suspense>
 			</div>
 			<div className="flex justify-center mt-4">

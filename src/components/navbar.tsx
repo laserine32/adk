@@ -4,6 +4,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import Search from "./search"
 import Image from "next/image"
 import { Suspense } from "react"
+import { headers } from "next/headers"
 
 type navigationItemType = {
   name: string,
@@ -11,13 +12,21 @@ type navigationItemType = {
   current: boolean
 }
 
-const navigation: navigationItemType[] = [
-	{ name: "Home", href: "/", current: true },
-	{ name: "Tags", href: "/tags", current: false }
-]
 
 
-const Navbar = () => {
+
+const Navbar = async () => {
+	const navigation: navigationItemType[] = [
+		{ name: "Home", href: "/", current: false },
+		{ name: "Tags", href: "/tags", current: false },
+		{ name: "Online", href: "/online", current: false }
+	]
+	const headersList = await headers()
+	const pathname = headersList.get("x-pathname") || "/"
+	const navIndex = navigation.findIndex(e => e.href == pathname)
+	if(navIndex >= 0){
+		navigation[navIndex].current = true
+	}
   return (
 		<>
 			<Disclosure as="nav" className="bg-border">
@@ -34,7 +43,6 @@ const Navbar = () => {
 						</div>
 						<div className="w-full flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
 							<div className="flex shrink-0 items-center py-2">
-								{/* <img alt="ADK" src="/adk01.png" className="h-8 w-auto" /> */}
                 <Image 
                   alt="ADK"
                   src={`/adk01.png`}
@@ -51,7 +59,10 @@ const Navbar = () => {
 											key={item.name}
 											href={item.href}
 											aria-current={item.current ? "page" : undefined}
-											className={"text-gray-300 hover:bg-input hover:text-white px-3 py-4 text-sm font-medium"}
+											className={cn(
+												item.current ? "bg-input text-white" : "text-gray-300 hover:bg-input hover:text-white",
+												"px-3 py-4 text-sm font-medium"
+											)}
 										>
 											{item.name}
 										</a>

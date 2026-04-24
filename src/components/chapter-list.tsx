@@ -5,31 +5,41 @@ import LazyImage from "./lazy-image"
 import useIsMobile from "@/hooks/use-mobile"
 import { usePathname } from "next/navigation"
 import { KomikgetSearchPagin, KomikWithTagsGrouped } from "@/db/queries/komik"
+import { CDNType } from "@/lib/nhapi"
 
 type ChapterListProps = {
   data: KomikgetSearchPagin
+	image_cdn: CDNType
 }
 
-const ChapterList: React.FC<ChapterListProps> = ({ data }) => {
+const ChapterList: React.FC<ChapterListProps> = ({ data, image_cdn }) => {
 	const isMobile = useIsMobile()
 	let pathName = usePathname()
 	pathName = pathName == "/" ? "" : pathName
+	const { image_servers, thumb_servers } = image_cdn
   return (
     <>
-      {data.map((e) =>
-				isMobile ? <CardMobile key={e.id} data={e} pathName={pathName} /> : <Card key={e.id} data={e} pathName={pathName} />
-			)}
+      {data.map((e, i) => {
+				let cdn_thumb = thumb_servers[i % thumb_servers.length]
+				const testurl = e.cover.split("/")[2][0]
+				if(testurl == "i"){
+					cdn_thumb = image_servers[i % image_servers.length]
+				}
+				const imgsrc = cdn_thumb + "/" + e.cover.split("/").slice(-3).join("/")
+				return isMobile ? <CardMobile key={e.id} data={e} pathName={pathName} imgsrc={imgsrc} /> : <Card key={e.id} data={e} pathName={pathName} imgsrc={imgsrc} />
+			})}
     </>
   )
 }
 
 type CardProps = {
-  data: KomikWithTagsGrouped,
+  data: KomikWithTagsGrouped
   pathName: string
+	imgsrc: string
 }
 
-const Card: React.FC<CardProps> = ({ data, pathName }) => {
-  const imgsrc = data.cover
+const Card: React.FC<CardProps> = ({ data, pathName, imgsrc }) => {
+  // const imgsrc = data.cover
 	const linkhref = `${pathName}/view/${data.id}`
 	let ptags = data.tags.find((e) => e.type == "artist")
 	if (ptags === undefined) ptags = data.tags.find((e) => e.type == "group")
@@ -68,8 +78,8 @@ const Card: React.FC<CardProps> = ({ data, pathName }) => {
   )
 }
 
-const CardMobile: React.FC<CardProps> = ({ data, pathName }) => {
-	const imgsrc = data.cover
+const CardMobile: React.FC<CardProps> = ({ data, pathName, imgsrc }) => {
+	// const imgsrc = data.cover
 	const linkhref = `${pathName}/view/${data.id}`
 	let tags = data.tags.find((e) => e.type == "artist")
 	if (tags === undefined) tags = data.tags.find((e) => e.type == "group")

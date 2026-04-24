@@ -1,12 +1,13 @@
-import { capitalizeFirstLetter, unicodeToChar } from "@/lib/utils"
+import { capitalizeFirstLetter, getRandomInt, unicodeToChar } from "@/lib/utils"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ListBulletIcon } from "@heroicons/react/24/outline"
 import LazyImage from "./lazy-image"
 import { KomikPage, NavKomikPage, TagsMinType } from "@/db/queries/komik"
 import NotFound from "@/app/not-found"
+import { getCDN } from "@/lib/nhapi"
 
-const ViewManga = ({ komik }: { komik:KomikPage}) => {
+const ViewManga = async ({ komik }: { komik:KomikPage}) => {
   const { data, nav } = komik
   if (!data) {
 		return (
@@ -15,12 +16,20 @@ const ViewManga = ({ komik }: { komik:KomikPage}) => {
 			</>
 		)
 	}
+	const { image_servers, thumb_servers } = await getCDN()
+	const rng = getRandomInt(1,100)
+	let cdn_thumb = thumb_servers[rng % thumb_servers.length]
+	const testurl = data.cover.split("/")[2][0]
+	if(testurl == "i"){
+		cdn_thumb = image_servers[rng % image_servers.length]
+	}
+	const imgsrc = cdn_thumb + "/" + data.cover.split("/").slice(-3).join("/")
   return (
     <>
 			<div className="my-4 grid grid-cols-1 md:grid-cols-2 gap-4 bg-border rounded p-4">
 				<div className="flex items-center justify-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-					<img src={data.cover} className="w-1/2" alt={data.title} />
+					<img src={imgsrc} className="w-1/2" alt={data.title} />
 				</div>
 				<div>
 					<h1 className="text-xl font-bold text-foreground mb-6">{data.title}</h1>
@@ -31,9 +40,11 @@ const ViewManga = ({ komik }: { komik:KomikPage}) => {
 				</div>
 			</div>
       <div className="flex flex-col justify-center items-center">
-        {data.pages.map((e) => (
-					<LazyImage src={e.img} key={e.id} className="w-full mb-1" />
-				))}
+        {data.pages.map((e, i) => {
+					const cdn_thumb = image_servers[i % image_servers.length]
+					const imgsrc = cdn_thumb + "/" + e.img.split("/").slice(-3).join("/")
+					return <LazyImage src={imgsrc} key={e.id} className="w-full mb-1" />
+				})}
       </div>
       <ReaderNav data={nav} />
 		</>

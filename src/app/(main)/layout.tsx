@@ -1,6 +1,7 @@
 import MainFallback from "@/components/main-fallback";
 import Navbar from "@/components/navbar";
 import ProgressBar from "@/components/progress-bar";
+import ScrollTop from "@/components/scroll-top";
 import { Suspense } from "react";
 
 const MainLayout = ({ children }: Readonly<{
@@ -12,6 +13,7 @@ const MainLayout = ({ children }: Readonly<{
       <Suspense fallback={<MainFallback/>}>
         <ProgressBar/>
         <div className="py-4 px-2 md:px-10">{children}</div>
+        <ScrollTop/>
       </Suspense>
     </>
   )

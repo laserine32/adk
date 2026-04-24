@@ -47,17 +47,45 @@ export const capitalizeFirstLetter = (text: unknown): string => {
 	return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-export const genMediaUrl = (
-	sv: number | string,
-	mid: number | string,
-	nm: number | string,
-	tp?: 'w' | 'j' | 'p' | string
-): string => {
-	let ext: string;
+export const getRandomInt = (min: number, max: number): number =>{
+	min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-	if (tp === 'w') ext = 'webp';
-	else if (tp === 'j') ext = 'jpg';
-	else ext = 'png';
+export function formatUnixTimeAgo(unixTimeStr: string): string {
+  const unixSeconds = parseInt(unixTimeStr, 10);
+  if (isNaN(unixSeconds)) {
+    throw new Error("Invalid UNIX time string");
+  }
 
-	return `https://i${sv}.nhentai.net/galleries/${mid}/${nm}.${ext}`;
+  const date = new Date(unixSeconds * 1000);
+  const now = new Date();
+
+  let diffMs = now.getTime() - date.getTime();
+  if (diffMs < 0) diffMs = 0;
+
+  const totalMinutes = Math.floor(diffMs / (1000 * 60));
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  const timeAgoParts: string[] = [];
+
+  if (hours > 0) {
+    timeAgoParts.push(`${hours} hour${hours > 1 ? "s" : ""}`);
+  }
+  if (minutes > 0) {
+    timeAgoParts.push(`${minutes} minute${minutes > 1 ? "s" : ""}`);
+  }
+
+  if (timeAgoParts.length === 0) {
+    timeAgoParts.push("just now");
+  }
+
+  const timeAgo = timeAgoParts.join(", ") + " ago";
+
+  // Format tanggal (MM/DD/YYYY)
+  const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+
+  return `${timeAgo} (${formattedDate})`;
 }

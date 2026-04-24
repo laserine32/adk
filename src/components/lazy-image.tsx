@@ -28,7 +28,8 @@ useEffect(() => {
       },
       {
         threshold: 0,
-        rootMargin: "10px 1px 2500px 1px",
+        // rootMargin: "10px 1px 5000px 1px",
+        rootMargin: "5000px 0px",
       }
     );
     const el = containerRef.current 

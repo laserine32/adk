@@ -27,7 +27,11 @@ export async function getTags(id: number): Promise<Tags>{
     .from(tags)
     .where(eq(tags.id, id))
   if (!data) {
-    throw new Error("Tag not found");
+    return {
+      id: -1,
+      type: "Not Found",
+      name: "Not Found"
+    }
   }
   return data
 }

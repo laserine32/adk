@@ -1,5 +1,5 @@
 import React, { JSX, Suspense } from 'react'
-import { getTags } from '@/db/queries/tags';
+import { AllTags, getAllTags, getTags } from '@/db/queries/tags';
 import { getKomikTaggetSearchPagin, getKomikTagTotalPage } from '@/db/queries/komik';
 import ChapterList from "@/components/chapter-list"
 import Pagination from "@/components/pagination"
@@ -8,6 +8,13 @@ import { FireIcon } from "@heroicons/react/24/solid"
 import { CDNType, getCDN } from '@/lib/nhapi';
 
 export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const all: AllTags = await getAllTags()
+  return all.map((item) => ({
+    id: `${item.id}`,
+  }))
+}
 
 export const generateMetadata = async ({
   params,

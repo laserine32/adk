@@ -4,7 +4,7 @@ import Link from "next/link"
 import LazyImage from "./lazy-image"
 import useIsMobile from "@/hooks/use-mobile"
 import { usePathname } from "next/navigation"
-import { KomikgetSearchPagin, KomikWithTagsGrouped } from "@/db/queries/komik"
+import { KomikgetSearchPagin, KomikWithTag } from "@/db/queries/komik"
 import { CDNType } from "@/lib/nhapi"
 
 type ChapterListProps = {
@@ -33,16 +33,13 @@ const ChapterList: React.FC<ChapterListProps> = ({ data, image_cdn }) => {
 }
 
 type CardProps = {
-  data: KomikWithTagsGrouped
+  data: KomikWithTag
   pathName: string
 	imgsrc: string
 }
 
 const Card: React.FC<CardProps> = ({ data, pathName, imgsrc }) => {
-  // const imgsrc = data.cover
 	const linkhref = `${pathName}/view/${data.id}`
-	let ptags = data.tags.find((e) => e.type == "artist")
-	if (ptags === undefined) ptags = data.tags.find((e) => e.type == "group")
   return (
     <>
       <div className="linking group">
@@ -61,14 +58,14 @@ const Card: React.FC<CardProps> = ({ data, pathName, imgsrc }) => {
 					<div className="flex items-center justify-start truncate text-primary mt-1">
 						<Link href={`${linkhref}`} aria-label={data.title}>
 							<p className="text-md text-foreground">{data.prettyTitle}</p>
-							<p className="text-muted text-sm">{ptags?.name}</p>
+							<p className="text-muted text-sm">{data.tag}</p>
 							<p className="text-muted text-sm">{formatDateToLocal(data.date)}</p>
 						</Link>
 					</div>
 					<div className="hidden group-hover:flex items-center justify-start text-primary mt-1 absolute left-0 top-0 bg-background z-50">
 						<Link href={`${linkhref}`} aria-label={data.title}>
 							<p className="text-md text-foreground">{data.prettyTitle}</p>
-							<p className="text-muted text-sm">{ptags?.name}</p>
+							<p className="text-muted text-sm">{data.tag}</p>
 							<p className="text-muted text-sm">{formatDateToLocal(data.date)}</p>
 						</Link>
 					</div>
@@ -79,10 +76,7 @@ const Card: React.FC<CardProps> = ({ data, pathName, imgsrc }) => {
 }
 
 const CardMobile: React.FC<CardProps> = ({ data, pathName, imgsrc }) => {
-	// const imgsrc = data.cover
 	const linkhref = `${pathName}/view/${data.id}`
-	let tags = data.tags.find((e) => e.type == "artist")
-	if (tags === undefined) tags = data.tags.find((e) => e.type == "group")
   return (
 		<>
 			<div className="linking group grid grid-cols-3 gap-2">
@@ -101,7 +95,7 @@ const CardMobile: React.FC<CardProps> = ({ data, pathName, imgsrc }) => {
 					<div className="flex items-center justify-start text-primary mt-1">
 						<Link href={`${linkhref}`} aria-label={data.title}>
 							<p className="text-md text-foreground">{data.prettyTitle}</p>
-							<p className="text-muted text-sm">{tags?.name}</p>
+							<p className="text-muted text-sm">{data.tag}</p>
 							<p className="text-muted text-sm">{formatDateToLocal(data.date)}</p>
 						</Link>
 					</div>

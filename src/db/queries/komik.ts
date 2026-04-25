@@ -5,17 +5,26 @@ import { ITEMS_PER_PAGE } from "@/lib/constants"
 
 export type KomikType = typeof komik.$inferSelect;
 
-export async function getKomikWithTags(
+export type TagsMinType = {
+  id: number
+  name: string
+  type: string
+}
+
+export type KomikWithTag = KomikType & {
+  tag: string | null;
+};
+
+export async function getKomikgetSearchPagin(
   query: string,
   page: number = 1
-) {
+){
   const offset = (page - 1) * ITEMS_PER_PAGE
 
   const where = query
     ? ilike(komik.title, `%${query}%`)
     : undefined
-  
-  const komikList = await db
+  const data = await db
     .select()
     .from(komik)
     .where(where)
@@ -23,78 +32,41 @@ export async function getKomikWithTags(
     .limit(ITEMS_PER_PAGE)
     .offset(offset)
   
-  const ids = komikList.map((k) => k.id)
-  
-  return db
-    .select({
-      komik,
-      tag: tags,
-    })
-    .from(komik)
-    .leftJoin(tagsOnKomik, eq(tagsOnKomik.komikId, komik.id))
-    .leftJoin(tags, eq(tags.id, tagsOnKomik.tagsId))
-    .where(inArray(komik.id, ids))
-    .orderBy(desc(komik.date))
-}
+  const komikIds = data.map(k => k.id);
+  const tagsData = await db
+  .select({
+    komikId: tagsOnKomik.komikId,
+    type: tags.type,
+    name: tags.name
+  })
+  .from(tagsOnKomik)
+  .leftJoin(tags, eq(tagsOnKomik.tagsId, tags.id))
+  .where(
+    and(
+      inArray(tagsOnKomik.komikId, komikIds),
+      inArray(tags.type, ['artist', 'group'])
+    )
+  );
 
-export type KomikWithTags = Awaited<
-  ReturnType<typeof getKomikWithTags>
->
+  const tagMap = new Map<number, string | null>();
+  for (const row of tagsData) {
+    const existing = tagMap.get(row.komikId);
 
-export type TagsMinType = {
-  id: number
-  name: string
-  type: string
-}
-
-export type KomikWithTagsGrouped = {
-  id: number
-  title: string
-  prettyTitle: string
-  date: string
-  cover: string
-  numPages: number
-  tags: TagsMinType[]
-}
-
-export function groupKomikWithTags(rows: KomikWithTags) {
-  const map = new Map<number, KomikWithTagsGrouped>()
-  for (const row of rows) {
-    const k = row.komik
-    const t = row.tag
-    if (!map.has(k.id)) {
-      map.set(k.id, {
-        id: k.id,
-        title: k.title,
-        prettyTitle: k.prettyTitle,
-        date: k.date,
-        cover: k.cover,
-        numPages: k.numPages,
-        tags: [],
-      })
-    }
-    if (t) {
-      map.get(k.id)!.tags.push({
-        id: t.id,
-        name: t.name,
-        type: t.type,
-      })
+    if (!existing || row.type === 'artist') {
+      tagMap.set(row.komikId, row.name);
     }
   }
-  return Array.from(map.values())
-}
 
-export async function getKomikgetSearchPagin(
-  query: string,
-  page: number = 1
-){
-  const rows = await getKomikWithTags(query, page)
-  return groupKomikWithTags(rows)
+  const result:KomikWithTag[] = data.map(k => ({
+    ...k,
+    tag: tagMap.get(k.id) ?? null
+  }));
+  return result
 }
 
 export type KomikgetSearchPagin = Awaited<ReturnType<typeof getKomikgetSearchPagin>>
 
-// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export async function getKomikTotalPage(
   query: string
@@ -113,51 +85,59 @@ export async function getKomikTotalPage(
   return Math.ceil(total / ITEMS_PER_PAGE);
 }
 
-// 
-
-export async function getKomikTagWithTags(
-  tagId: number,
-  query: string,
-  page: number = 1
-) {
-  const offset = (page - 1) * ITEMS_PER_PAGE
-
-  const whereTag = tagId ? eq(tagsOnKomik.tagsId, tagId) : undefined
-  const where = query ? ilike(komik.title, `%${query}%`) : undefined
-  
-  const komikList = await db
-    .select({komik})
-    .from(komik)
-    .leftJoin(tagsOnKomik, eq(tagsOnKomik.komikId, komik.id))
-    .where(and(
-      whereTag,
-      where
-    ))
-    .orderBy(desc(komik.date))
-    .limit(ITEMS_PER_PAGE)
-    .offset(offset)
-  
-  const ids = komikList.map((k) => k.komik.id)
-
-  return db
-    .select({
-      komik,
-      tag: tags,
-    })
-    .from(komik)
-    .leftJoin(tagsOnKomik, eq(tagsOnKomik.komikId, komik.id))
-    .leftJoin(tags, eq(tags.id, tagsOnKomik.tagsId))
-    .where(inArray(komik.id, ids))
-    .orderBy(desc(komik.date))
-}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export async function getKomikTaggetSearchPagin(
   tagId: number,
   query: string,
   page: number = 1
 ){
-  const rows = await getKomikTagWithTags(tagId, query, page)
-  return groupKomikWithTags(rows)
+  const offset = (page - 1) * ITEMS_PER_PAGE
+
+  const whereTag = tagId ? eq(tagsOnKomik.tagsId, tagId) : undefined
+  const where = query ? ilike(komik.title, `%${query}%`) : undefined
+  const rawdata = await db
+    .select(
+      {komik}
+    )
+    .from(komik)
+    .leftJoin(tagsOnKomik, eq(tagsOnKomik.komikId, komik.id))
+    .where(and(where, whereTag))
+    .orderBy(desc(komik.date))
+    .limit(ITEMS_PER_PAGE)
+    .offset(offset)
+  
+  const data = rawdata.map((k) => k.komik)
+  const komikIds = data.map(k => k.id);
+  const tagsData = await db
+  .select({
+    komikId: tagsOnKomik.komikId,
+    type: tags.type,
+    name: tags.name
+  })
+  .from(tagsOnKomik)
+  .leftJoin(tags, eq(tagsOnKomik.tagsId, tags.id))
+  .where(
+    and(
+      inArray(tagsOnKomik.komikId, komikIds),
+      inArray(tags.type, ['artist', 'group'])
+    )
+  );
+
+  const tagMap = new Map<number, string | null>();
+  for (const row of tagsData) {
+    const existing = tagMap.get(row.komikId);
+
+    if (!existing || row.type === 'artist') {
+      tagMap.set(row.komikId, row.name);
+    }
+  }
+
+  const result:KomikWithTag[] = data.map(k => ({
+    ...k,
+    tag: tagMap.get(k.id) ?? null
+  }));
+  return result
 }
 
 export async function getKomikTagTotalPage(
@@ -183,7 +163,7 @@ export async function getKomikTagTotalPage(
   return Math.ceil(total / ITEMS_PER_PAGE);
 }
 
-// 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
 export async function getKomik(id: number) {
   const [data] = await db
@@ -193,13 +173,13 @@ export async function getKomik(id: number) {
   return data
 }
 
-export type PagesMinType = {
+type PagesMinType = {
   id: string
   img: string
   num: number
 }
 
-export type KomikWithPage = {
+type KomikWithPage = {
   id: number
   title: string
   prettyTitle: string
@@ -273,31 +253,6 @@ export async function getRawKomikPage(id: number) {
   return Array.from(map.values())
 }
 
-export type RawKomikPage = Awaited<ReturnType<typeof getRawKomikPage>>
-
-export async function getNav(id: number){
-  const data = await db
-    .select()
-    .from(komik)
-    .orderBy(desc(komik.date))
-  
-  const allChapter = data.map((e) => ({ ...e, link: `/view/${e.id}`}))
-  const index = allChapter.findIndex((e) => e.id === id)
-  const prev = index === 0 ? "" : allChapter[index - 1].link
-  const next = index === allChapter.length - 1 ? "" : allChapter[index + 1].link
-  return { prev, next, current: id, list: "/" }
-}
-
-export type KomikNav = Awaited<ReturnType<typeof getNav>>
-
-export async function getKomikPage2(id: number) {
-  const [rows] = await getRawKomikPage(id)
-  const nav = await getNav(id)
-  return {
-    data: rows,
-    nav: nav
-  }
-}
 
 //////////////////////////////////////////////////////////////////////////////// 
 
@@ -440,7 +395,3 @@ export async function getKomikPage(id: number):Promise<KomikPage> {
     nav: { prev, next, current: `${id}`, list: "/" }
   }
 }
-
-
-/* 
-*/

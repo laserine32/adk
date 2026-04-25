@@ -1,11 +1,9 @@
-import { CDNType, getCDN, NHMainPageType, ResultNHMainPageType } from "@/lib/nhapi"
-import { headers } from "next/headers"
+import { CDNType, getCDN, getLanguage, NHMainPageType, ResultNHMainPageType } from "@/lib/nhapi"
 import Link from "next/link"
 import LazyImage from "./lazy-image"
 
 const ChapterListOnline = async ({ data }:{ data:NHMainPageType }) => {
-  const headersList = await headers()
-  const pathname = headersList.get("x-pathname") || ""
+  const pathname = `/online`
   const image_cdn:CDNType = await getCDN()
   const { thumb_servers } = image_cdn
   return (
@@ -28,6 +26,8 @@ type CardProps = {
 
 const Card: React.FC<CardProps> = ({ data, pathName, imgsrc }) => {
   const linkhref = `${pathName}/view/${data.id}`
+  const tagLanguage = getLanguage(data.tag_ids)
+  const language = tagLanguage ? tagLanguage.flag : ``
   return (
     <>
       <div className="linking group">
@@ -45,12 +45,12 @@ const Card: React.FC<CardProps> = ({ data, pathName, imgsrc }) => {
         <div className="relative">
           <div className="flex items-center justify-start truncate text-primary mt-1">
             <Link href={`${linkhref}`} aria-label={data.english_title}>
-              <p className="text-md text-foreground">{data.english_title}</p>
+              <p className="text-md text-foreground">{language} {data.english_title}</p>
             </Link>
           </div>
           <div className="hidden group-hover:flex items-center justify-start text-primary mt-1 absolute left-0 top-0 bg-background z-50">
             <Link href={`${linkhref}`} aria-label={data.english_title}>
-              <p className="text-md text-foreground">{data.english_title}</p>
+              <p className="text-md text-foreground">{language} {data.english_title}</p>
             </Link>
           </div>
         </div>

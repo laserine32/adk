@@ -1,8 +1,9 @@
 import NotFound from "@/app/not-found"
-import { GalleryType, getCDN, NHTag } from "@/lib/nhapi"
+import { GalleryType, getCDN, NHTag, NHTitle } from "@/lib/nhapi"
 import { capitalizeFirstLetter, formatUnixTimeAgo, getRandomInt, unicodeToChar } from "@/lib/utils"
 import Link from "next/link"
 import LazyImage from "./lazy-image"
+import { JSX } from "react"
 
 const ViewMangaOnline = async ({ komik }: { komik:GalleryType}) => {
   if (!komik) {
@@ -24,7 +25,8 @@ const ViewMangaOnline = async ({ komik }: { komik:GalleryType}) => {
 					<img src={coverImg} className="w-3/4" alt={komik.title.english} />
 				</div>
 				<div className="md:col-span-3">
-					<h1 className="text-xl font-bold text-foreground mb-6">{komik.title.english}</h1>
+					{/* <h1 className="text-xl font-bold text-foreground mb-6">{komik.title.english}</h1> */}
+          <h1 className="text-xl font-bold mb-6"><ExpandTitle title={komik.title} /></h1>
 					<h3 className=" mb-6 text-foreground">{unicodeToChar(komik.title.japanese)}</h3>
 					<div className="my-4 flex-row w-full">
 						<RenderTags data={komik.tags} />
@@ -50,6 +52,44 @@ const ViewMangaOnline = async ({ komik }: { komik:GalleryType}) => {
       </div>
     </>
   )
+}
+
+type TitlePart = {
+  type: 'pretty' | 'other'
+  value: string
+}
+
+const ExpandTitle = ({ title }:{ title: NHTitle }): JSX.Element => {
+  const { english, pretty } = title
+  const result: TitlePart[] = []
+
+  const index = english.indexOf(pretty)
+  if (index === -1) {
+    return (<span className="text-foreground/5">{english}</span>)
+  }
+
+  const before = english.slice(0, index).trim()
+  const after = english.slice(index + pretty.length).trim()
+
+  if (before) {
+    result.push({ type: 'other', value: before })
+  }
+  result.push({ type: 'pretty', value: pretty })
+  if (after) {
+    result.push({ type: 'other', value: after })
+  }
+
+  return (
+    <>
+      {result.map((e, i) => {
+        if(e.type == 'other'){
+          return (<span key={i} className="text-foreground/60">{e.value}</span>)
+        }
+        return (<span key={i} className="text-foreground"> {e.value} </span>)
+      })}
+    </>
+  )
+
 }
 
 const RenderTags = ({ data }: { data:NHTag[] }) => {
@@ -80,7 +120,7 @@ const TagsRender = ({ title, data }:{ title:string, data:NHTag[] }) => {
 const Tag = ({ data }: { data:NHTag }) => {
 	return (
 		<>
-			<Link href={`/tags/${data.id}`}>
+			<Link href={`/online/tags/${data.id}`}>
         <Badge text={data.name} count={data.count} />
 			</Link>
 		</>

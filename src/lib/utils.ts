@@ -36,6 +36,9 @@ export const formatDateToLocal = (dateStr: string, locale: string = "id-ID"): st
 }
 
 export const unicodeToChar = (text: string): string => {
+  if(!text){
+    return ``
+  }
   return text.replace(/\\u[\dA-F]{4}/gi, (match: string): string => {
 		const hex: string = match.replace(/\\u/g, '');
 		return String.fromCharCode(parseInt(hex, 16));

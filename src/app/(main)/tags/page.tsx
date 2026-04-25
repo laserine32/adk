@@ -8,13 +8,6 @@ import { AllTags, getAllTags, groupTags, GroupTags, Tags } from "@/db/queries/ta
 
 export const revalidate = 3600;
 
-export async function generateStaticParams() {
-  const all: AllTags = await getAllTags()
-  return all.map((item) => ({
-    slug: item.id,
-  }))
-}
-
 export const generateMetadata = (): Metadata => {
   return {
     title: 'Tags',

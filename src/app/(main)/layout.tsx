@@ -4,19 +4,21 @@ import ProgressBar from "@/components/progress-bar";
 import ScrollTop from "@/components/scroll-top";
 import { Suspense } from "react";
 
-const MainLayout = ({ children }: Readonly<{
-  children: React.ReactNode;
-}> ) => {
-  return (
-    <>
-      <Navbar/>
-      <Suspense fallback={<MainFallback/>}>
-        <ProgressBar/>
-        <div className="py-4 px-2 md:px-10">{children}</div>
-        <ScrollTop/>
-      </Suspense>
-    </>
-  )
-}
+const MainLayout = ({
+	children,
+}: Readonly<{
+	children: React.ReactNode;
+}>) => {
+	return (
+		<>
+			<Navbar />
+			<Suspense fallback={<MainFallback />}>
+				<ProgressBar />
+				<div className="py-4 px-2 md:px-10">{children}</div>
+				<ScrollTop />
+			</Suspense>
+		</>
+	);
+};
 
-export default MainLayout
+export default MainLayout;

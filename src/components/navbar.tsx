@@ -1,33 +1,30 @@
-import { cn } from "@/lib/utils"
-import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react"
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
-import Search from "./search"
-import Image from "next/image"
-import { Suspense } from "react"
-import { headers } from "next/headers"
+import { cn } from "@/lib/utils";
+import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import Search from "./search";
+import Image from "next/image";
+import { Suspense } from "react";
+import { headers } from "next/headers";
 
 type navigationItemType = {
-  name: string,
-  href: string,
-  current: boolean
-}
-
-
-
+	name: string;
+	href: string;
+	current: boolean;
+};
 
 const Navbar = async () => {
 	const navigation: navigationItemType[] = [
 		{ name: "Home", href: "/", current: false },
 		{ name: "Tags", href: "/tags", current: false },
-		{ name: "Online", href: "/online", current: false }
-	]
-	const headersList = await headers()
-	const pathname = headersList.get("x-pathname") || "/"
-	const navIndex = navigation.findIndex(e => e.href == pathname)
-	if(navIndex >= 0){
-		navigation[navIndex].current = true
+		{ name: "Online", href: "/online", current: false },
+	];
+	const headersList = await headers();
+	const pathname = headersList.get("x-pathname") || "/";
+	const navIndex = navigation.findIndex((e) => e.href == pathname);
+	if (navIndex >= 0) {
+		navigation[navIndex].current = true;
 	}
-  return (
+	return (
 		<>
 			<Disclosure as="nav" className="bg-border">
 				<div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -43,14 +40,7 @@ const Navbar = async () => {
 						</div>
 						<div className="w-full flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
 							<div className="flex shrink-0 items-center py-2">
-                <Image 
-                  alt="ADK"
-                  src={`/adk01.png`}
-                  className="h-8 w-auto"
-                  width={32}
-                  height={32}
-									loading="eager"
-                />
+								<Image alt="ADK" src={`/adk01.png`} className="h-8 w-auto" width={32} height={32} loading="eager" />
 							</div>
 							<div className="hidden sm:ml-6 sm:block grow">
 								<div className="flex">
@@ -61,7 +51,7 @@ const Navbar = async () => {
 											aria-current={item.current ? "page" : undefined}
 											className={cn(
 												item.current ? "bg-input text-white" : "text-gray-300 hover:bg-input hover:text-white",
-												"px-3 py-4 text-sm font-medium"
+												"px-3 py-4 text-sm font-medium",
 											)}
 										>
 											{item.name}
@@ -87,7 +77,7 @@ const Navbar = async () => {
 								aria-current={item.current ? "page" : undefined}
 								className={cn(
 									item.current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white",
-									"block rounded-md px-3 py-2 text-base font-medium"
+									"block rounded-md px-3 py-2 text-base font-medium",
 								)}
 							>
 								{item.name}
@@ -97,7 +87,7 @@ const Navbar = async () => {
 				</DisclosurePanel>
 			</Disclosure>
 		</>
-	)
-}
+	);
+};
 
-export default Navbar
+export default Navbar;

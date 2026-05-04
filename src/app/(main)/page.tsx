@@ -18,14 +18,14 @@ type HomeProps = {
 };
 
 const Home = async ({ searchParams }: HomeProps): Promise<JSX.Element> => {
-	const csp = await searchParams
-	const query = csp?.query || ""
-	const currentPage = Number(csp?.page) || 1
-  const data = await getKomikgetSearchPagin(query, currentPage)
-  const totalPage = await getKomikTotalPage(query)
-	const image_cdn:CDNType = await getCDN()
-  return (
-    <>
+	const csp = await searchParams;
+	const query = csp?.query || "";
+	const currentPage = Number(csp?.page) || 1;
+	const data = await getKomikgetSearchPagin(query, currentPage);
+	const totalPage = await getKomikTotalPage(query);
+	const image_cdn: CDNType = await getCDN();
+	return (
+		<>
 			<div className="flex justify-center items-center gap-4">
 				<FireIcon className="w-6 text-red-500" />
 				<h1 className="text-2xl font-bold">Home</h1>
@@ -39,7 +39,7 @@ const Home = async ({ searchParams }: HomeProps): Promise<JSX.Element> => {
 				<Pagination totalPages={totalPage} />
 			</div>
 		</>
-  )
-}
+	);
+};
 
-export default Home
+export default Home;

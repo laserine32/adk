@@ -1,7 +1,7 @@
-import { Skeleton } from "./skeleton"
+import { Skeleton } from "./skeleton";
 
 const SkeletonView = () => {
-  return (
+	return (
 		<>
 			<div className="my-4 grid grid-cols-2 gap-4 bg-border rounded p-4">
 				<div className="flex items-center justify-center">
@@ -23,7 +23,7 @@ const SkeletonView = () => {
 			<Skeleton className={"w-full h-screen"} />
 			<Skeleton className={"w-full h-screen"} />
 		</>
-	)
-}
+	);
+};
 
-export default SkeletonView
+export default SkeletonView;

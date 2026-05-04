@@ -1,13 +1,13 @@
-"use client"
-import { ChevronUpIcon } from "@heroicons/react/16/solid"
+"use client";
+import { ChevronUpIcon } from "@heroicons/react/16/solid";
 
 const ScrollTop = () => {
-  const scrollToTop = () => {
+	const scrollToTop = () => {
 		window.scrollTo({
 			top: 0,
 			behavior: "smooth",
-		})
-	}
+		});
+	};
 	return (
 		<>
 			<div className="hidden md:block">
@@ -19,7 +19,7 @@ const ScrollTop = () => {
 				</div>
 			</div>
 		</>
-	)
-}
+	);
+};
 
-export default ScrollTop
+export default ScrollTop;

@@ -1,26 +1,26 @@
-"use client"
-import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/solid"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useDebouncedCallback } from "use-debounce"
+"use client";
+import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
 const Search = () => {
-  const searchParams = useSearchParams()
-	const pathname = usePathname()
-	const { replace } = useRouter()
+	const searchParams = useSearchParams();
+	const pathname = usePathname();
+	const { replace } = useRouter();
 
-  const handleSearch = useDebouncedCallback((term) => {
-		const params = new URLSearchParams(searchParams)
-		params.set("page", "1")
+	const handleSearch = useDebouncedCallback((term) => {
+		const params = new URLSearchParams(searchParams);
+		params.set("page", "1");
 		if (term) {
-			params.set("query", term)
+			params.set("query", term);
 		} else {
-			params.delete("query")
+			params.delete("query");
 		}
-		replace(`${pathname}?${params.toString()}`)
-	}, 300)
+		replace(`${pathname}?${params.toString()}`);
+	}, 300);
 
-  return (
-    <>
+	return (
+		<>
 			<form className="flex bg-zinc-800 border border-zinc-700 text-white rounded-md shadow text-sm">
 				<div aria-disabled="true" className="w-10 grid place-content-center">
 					<MagnifyingGlassIcon className="w-4 h-4 text-white" />
@@ -39,7 +39,7 @@ const Search = () => {
 				</button>
 			</form>
 		</>
-  )
-}
+	);
+};
 
-export default Search
+export default Search;

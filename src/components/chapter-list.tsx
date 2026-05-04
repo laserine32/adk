@@ -1,48 +1,52 @@
-"use client"
-import { formatDateToLocal } from "@/lib/utils"
-import Link from "next/link"
-import LazyImage from "./lazy-image"
-import useIsMobile from "@/hooks/use-mobile"
-import { usePathname } from "next/navigation"
-import { KomikgetSearchPagin, KomikWithTag } from "@/db/queries/komik"
-import { CDNType } from "@/lib/nhapi"
+"use client";
+import { formatDateToLocal } from "@/lib/utils";
+import Link from "next/link";
+import LazyImage from "./lazy-image";
+import useIsMobile from "@/hooks/use-mobile";
+import { usePathname } from "next/navigation";
+import { KomikgetSearchPagin, KomikWithTag } from "@/db/queries/komik";
+import { CDNType } from "@/lib/nhapi";
 
 type ChapterListProps = {
-  data: KomikgetSearchPagin
-	image_cdn: CDNType
-}
+	data: KomikgetSearchPagin;
+	image_cdn: CDNType;
+};
 
 const ChapterList: React.FC<ChapterListProps> = ({ data, image_cdn }) => {
-	const isMobile = useIsMobile()
-	let pathName = usePathname()
-	pathName = pathName == "/" ? "" : pathName
-	const { image_servers, thumb_servers } = image_cdn
-  return (
-    <>
-      {data.map((e, i) => {
-				let cdn_thumb = thumb_servers[i % thumb_servers.length]
-				const testurl = e.cover.split("/")[2][0]
-				if(testurl == "i"){
-					cdn_thumb = image_servers[i % image_servers.length]
+	const isMobile = useIsMobile();
+	let pathName = usePathname();
+	pathName = pathName == "/" ? "" : pathName;
+	const { image_servers, thumb_servers } = image_cdn;
+	return (
+		<>
+			{data.map((e, i) => {
+				let cdn_thumb = thumb_servers[i % thumb_servers.length];
+				const testurl = e.cover.split("/")[2][0];
+				if (testurl == "i") {
+					cdn_thumb = image_servers[i % image_servers.length];
 				}
-				const imgsrc = cdn_thumb + "/" + e.cover.split("/").slice(-3).join("/")
-				return isMobile ? <CardMobile key={e.id} data={e} pathName={pathName} imgsrc={imgsrc} /> : <Card key={e.id} data={e} pathName={pathName} imgsrc={imgsrc} />
+				const imgsrc = cdn_thumb + "/" + e.cover.split("/").slice(-3).join("/");
+				return isMobile ? (
+					<CardMobile key={e.id} data={e} pathName={pathName} imgsrc={imgsrc} />
+				) : (
+					<Card key={e.id} data={e} pathName={pathName} imgsrc={imgsrc} />
+				);
 			})}
-    </>
-  )
-}
+		</>
+	);
+};
 
 type CardProps = {
-  data: KomikWithTag
-  pathName: string
-	imgsrc: string
-}
+	data: KomikWithTag;
+	pathName: string;
+	imgsrc: string;
+};
 
 const Card: React.FC<CardProps> = ({ data, pathName, imgsrc }) => {
-	const linkhref = `${pathName}/view/${data.id}`
-  return (
-    <>
-      <div className="linking group">
+	const linkhref = `${pathName}/view/${data.id}`;
+	return (
+		<>
+			<div className="linking group">
 				<div className="relative h-[40vw] overflow-hidden rounded-xl md:h-[20vw]">
 					<Link href={`${linkhref}`}>
 						<LazyImage
@@ -71,13 +75,13 @@ const Card: React.FC<CardProps> = ({ data, pathName, imgsrc }) => {
 					</div>
 				</div>
 			</div>
-    </>
-  )
-}
+		</>
+	);
+};
 
 const CardMobile: React.FC<CardProps> = ({ data, pathName, imgsrc }) => {
-	const linkhref = `${pathName}/view/${data.id}`
-  return (
+	const linkhref = `${pathName}/view/${data.id}`;
+	return (
 		<>
 			<div className="linking group grid grid-cols-3 gap-2">
 				<div className="relative h-[40vw] overflow-hidden rounded-xl md:h-[20vw]">
@@ -102,7 +106,7 @@ const CardMobile: React.FC<CardProps> = ({ data, pathName, imgsrc }) => {
 				</div>
 			</div>
 		</>
-	)
-}
+	);
+};
 
-export default ChapterList
+export default ChapterList;

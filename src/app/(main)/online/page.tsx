@@ -18,6 +18,15 @@ type HomeProps = {
 	searchParams: Promise<SearchParams | undefined> | SearchParams | undefined;
 };
 
+export const generateMetadata = async ({ searchParams }: HomeProps) => {
+	const csp = await searchParams;
+	const query = csp?.query || "";
+	const title = query == "" ? `Online` : `Search result for "Query" | Online`;
+	return {
+		title: `${title}`,
+	};
+};
+
 const OnlinePage = async ({ searchParams }: HomeProps): Promise<JSX.Element> => {
 	const csp = await searchParams;
 	const query = csp?.query || "";
@@ -35,9 +44,7 @@ const OnlinePage = async ({ searchParams }: HomeProps): Promise<JSX.Element> => 
 				<div className="flex justify-center items-center gap-4 my-4">
 					<SortOnline />
 				</div>
-				<div className="my-8 grid grid-cols-2 gap-4 md:grid-cols-5 md:gap-6">
-					<ChapterListOnline data={data} />
-				</div>
+				<ChapterListOnline data={data} />
 			</Suspense>
 			<div className="flex justify-center my-28">
 				<Pagination totalPages={totalPage} />

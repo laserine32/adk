@@ -42,8 +42,15 @@ export async function getKomikgetSearchPagin(query: string, page: number = 1) {
 	for (const row of tagsData) {
 		const existing = tagMap.get(row.komikId);
 
-		if (!existing || row.type === "artist") {
-			tagMap.set(row.komikId, row.name);
+		if (!existing) {
+			if (row.type === "artist") {
+				tagMap.set(row.komikId, row.name);
+				continue;
+			}
+			if (row.type === "group") {
+				tagMap.set(row.komikId, row.name);
+				continue;
+			}
 		}
 	}
 

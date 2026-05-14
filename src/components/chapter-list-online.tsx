@@ -4,15 +4,26 @@ import LazyImage from "./lazy-image";
 
 const ChapterListOnline = async ({ data }: { data: NHMainPageType }) => {
 	const pathname = `/online`;
+	if (data.result.length === 0) {
+		return (
+			<>
+				<div>
+					<h4>Not Found!</h4>
+				</div>
+			</>
+		);
+	}
 	const image_cdn: CDNType = await getCDN();
 	const { thumb_servers } = image_cdn;
 	return (
 		<>
-			{data.result.map((e, i) => {
-				const cdn_thumb = thumb_servers[i % thumb_servers.length];
-				const imgsrc = `${cdn_thumb}/${e.thumbnail}`;
-				return <Card key={i} data={e} pathName={pathname} imgsrc={imgsrc} />;
-			})}
+			<div className="my-8 grid grid-cols-2 gap-4 md:grid-cols-5 md:gap-6">
+				{data.result.map((e, i) => {
+					const cdn_thumb = thumb_servers[i % thumb_servers.length];
+					const imgsrc = `${cdn_thumb}/${e.thumbnail}`;
+					return <Card key={i} data={e} pathName={pathname} imgsrc={imgsrc} />;
+				})}
+			</div>
 		</>
 	);
 };

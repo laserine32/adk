@@ -1,5 +1,6 @@
-import { pgTable, timestamp, text, integer, foreignKey, primaryKey } from "drizzle-orm/pg-core";
+import { pgTable, timestamp, text, integer, foreignKey, index, primaryKey } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
+import { relations } from "drizzle-orm/relations";
 
 export const tags = pgTable("Tags", {
 	id: integer().primaryKey().notNull(),
@@ -7,21 +8,25 @@ export const tags = pgTable("Tags", {
 	name: text().notNull(),
 });
 
-export const komik = pgTable("Komik", {
-	id: integer().primaryKey().notNull(),
-	title: text().default("").notNull(),
-	japaneseTitle: text("japanese_title").default("").notNull(),
-	prettyTitle: text("pretty_title").default("").notNull(),
-	images: text().default("").notNull(),
-	uploadDate: integer("upload_date").default(0).notNull(),
-	numPages: integer("num_pages").default(0).notNull(),
-	numFavorites: integer("num_favorites").default(0).notNull(),
-	cover: text().default("").notNull(),
-	date: timestamp({ precision: 3, mode: "string" })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
-	numId: integer("num_id").default(0).notNull(),
-});
+export const komik = pgTable(
+	"Komik",
+	{
+		id: integer().primaryKey().notNull(),
+		title: text().default("").notNull(),
+		japaneseTitle: text("japanese_title").default("").notNull(),
+		prettyTitle: text("pretty_title").default("").notNull(),
+		images: text().default("").notNull(),
+		uploadDate: integer("upload_date").default(0).notNull(),
+		numPages: integer("num_pages").default(0).notNull(),
+		numFavorites: integer("num_favorites").default(0).notNull(),
+		cover: text().default("").notNull(),
+		date: timestamp({ precision: 3, mode: "string" })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		numId: integer("num_id").default(0).notNull(),
+	},
+	(table) => [index("idx_komik_title_trgm").using("gin", table.title.asc().nullsLast().op("gin_trgm_ops"))],
+);
 
 export const pages = pgTable(
 	"Pages",
@@ -66,3 +71,30 @@ export const tagsOnKomik = pgTable(
 		primaryKey({ columns: [table.komikId, table.tagsId], name: "TagsOnKomik_pkey" }),
 	],
 );
+
+export const pagesRelations = relations(pages, ({ one }) => ({
+	komik: one(komik, {
+		fields: [pages.komikId],
+		references: [komik.id],
+	}),
+}));
+
+export const komikRelations = relations(komik, ({ many }) => ({
+	pages: many(pages),
+	tagsOnKomiks: many(tagsOnKomik),
+}));
+
+export const tagsOnKomikRelations = relations(tagsOnKomik, ({ one }) => ({
+	komik: one(komik, {
+		fields: [tagsOnKomik.komikId],
+		references: [komik.id],
+	}),
+	tag: one(tags, {
+		fields: [tagsOnKomik.tagsId],
+		references: [tags.id],
+	}),
+}));
+
+export const tagsRelations = relations(tags, ({ many }) => ({
+	tagsOnKomiks: many(tagsOnKomik),
+}));

@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { tags } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { cache } from "react";
 
 export type Tags = typeof tags.$inferSelect;
 
@@ -16,7 +17,7 @@ export function groupTags(data: AllTags) {
 
 export type GroupTags = ReturnType<typeof groupTags>;
 
-export async function getTags(id: number): Promise<Tags> {
+export const getTags = cache(async (id: number): Promise<Tags> => {
 	const [data] = await db.select().from(tags).where(eq(tags.id, id));
 	if (!data) {
 		return {
@@ -26,4 +27,4 @@ export async function getTags(id: number): Promise<Tags> {
 		};
 	}
 	return data;
-}
+});

@@ -14,17 +14,25 @@ export const generateMetadata = (): Metadata => {
 	};
 };
 
-const TagsPage = async () => {
-	const data: AllTags = await getAllTags();
+const TagsPage = () => {
 	return (
 		<>
 			<div className="flex justify-center items-center gap-4">
 				<TagIcon className="w-6 text-red-500" />
 				<h1 className="text-2xl font-bold">Tags</h1>
 			</div>
-			<Suspense key={data.length} fallback={<TagsSkeleton />}>
-				<TagsElm data={data} />
+			<Suspense fallback={<TagsSkeleton />}>
+				<TagsMainPage />
 			</Suspense>
+		</>
+	);
+};
+
+const TagsMainPage = async () => {
+	const data: AllTags = await getAllTags();
+	return (
+		<>
+			<TagsElm data={data} />
 		</>
 	);
 };
@@ -54,16 +62,19 @@ const TagsRender = ({ title, data }: { title: string; data: AllTags }) => {
 };
 
 const TagsSkeleton = () => {
-	const data = [...Array(40).keys()];
+	const data = [...Array(140).keys()];
 	const width = ["px-12", "px-8", "px-10"];
-	const generateTags = () =>
-		data.map((e) => {
-			const random = Math.floor(Math.random() * width.length);
-			return <Skeleton key={e} className={cn(width[random], "rounded py-4")} />;
-		});
+	const GenerateTags = () => {
+		const random = Math.floor(Math.random() * width.length);
+		return <Skeleton className={cn(width[random], "rounded py-4")} />;
+	};
 	return (
 		<>
-			<div className="my-8 flex gap-2 w-full flex-wrap justify-center items-center">{generateTags().join("")}</div>
+			<div className="my-8 flex gap-2 w-full flex-wrap justify-center items-center">
+				{data.map((e) => (
+					<GenerateTags key={e} />
+				))}
+			</div>
 		</>
 	);
 };

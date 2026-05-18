@@ -22,7 +22,7 @@ const ViewMangaOnline = async ({ komik }: { komik: GalleryType }) => {
 			<div className="my-4 grid grid-cols-1 md:grid-cols-5 gap-4 bg-border rounded p-4">
 				<div className="flex items-center justify-center md:col-span-2">
 					{/* eslint-disable-next-line @next/next/no-img-element */}
-					<img src={coverImg} className="w-3/4" alt={komik.title.english} />
+					<img src={coverImg} className="w-3/4" alt={komik.title.english} loading="lazy" />
 				</div>
 				<div className="md:col-span-3">
 					{/* <h1 className="text-xl font-bold text-foreground mb-6">{komik.title.english}</h1> */}
@@ -45,11 +45,15 @@ const ViewMangaOnline = async ({ komik }: { komik: GalleryType }) => {
 					</div>
 				</div>
 			</div>
-			<div className="flex flex-col justify-center items-center">
+			<div className="flex flex-col justify-center items-center md:flex-row-reverse md:items-center md:flex-wrap md:gap-2">
 				{komik.pages.map((e, i) => {
 					const cdn_image = image_servers[i % image_servers.length];
 					const imgsrc = `${cdn_image}/${e.path}`;
-					return <LazyImage src={imgsrc} key={e.number} className="w-full mb-1" />;
+					return (
+						<div key={e.number} className="md:w-[20vw]">
+							<LazyImage src={imgsrc} className="w-full mb-1" />
+						</div>
+					);
 				})}
 			</div>
 		</>

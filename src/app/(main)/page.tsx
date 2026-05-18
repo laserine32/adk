@@ -17,13 +17,7 @@ type HomeProps = {
 	searchParams: Promise<SearchParams | undefined> | SearchParams | undefined;
 };
 
-const Home = async ({ searchParams }: HomeProps): Promise<JSX.Element> => {
-	const csp = await searchParams;
-	const query = csp?.query || "";
-	const currentPage = Number(csp?.page) || 1;
-	const data = await getKomikgetSearchPagin(query, currentPage);
-	const totalPage = await getKomikTotalPage(query);
-	const image_cdn: CDNType = await getCDN();
+const Home = ({ searchParams }: HomeProps) => {
 	return (
 		<>
 			<div className="flex justify-center items-center gap-4">
@@ -31,10 +25,35 @@ const Home = async ({ searchParams }: HomeProps): Promise<JSX.Element> => {
 				<h1 className="text-2xl font-bold">Home</h1>
 			</div>
 			<div className="my-8 grid grid-cols-1 gap-4 md:grid-cols-6 md:gap-6">
-				<Suspense key={query + currentPage} fallback={<SkeletonKomik />}>
-					<ChapterList data={data} image_cdn={image_cdn} />
+				<Suspense fallback={<SkeletonKomik />}>
+					<MainHome searchParams={searchParams} />
 				</Suspense>
 			</div>
+			<Suspense>
+				<MainPaginationHome searchParams={searchParams} />
+			</Suspense>
+		</>
+	);
+};
+
+const MainHome = async ({ searchParams }: HomeProps): Promise<JSX.Element> => {
+	const csp = await searchParams;
+	const query = csp?.query || "";
+	const currentPage = Number(csp?.page) || 1;
+	const data = await getKomikgetSearchPagin(query, currentPage);
+	const image_cdn: CDNType = await getCDN();
+	return (
+		<>
+			<ChapterList data={data} image_cdn={image_cdn} />
+		</>
+	);
+};
+const MainPaginationHome = async ({ searchParams }: HomeProps): Promise<JSX.Element> => {
+	const csp = await searchParams;
+	const query = csp?.query || "";
+	const totalPage = await getKomikTotalPage(query);
+	return (
+		<>
 			<div className="flex justify-center my-28">
 				<Pagination totalPages={totalPage} />
 			</div>

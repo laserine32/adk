@@ -30,7 +30,17 @@ type TagsPageIdProps = {
 	searchParams: Promise<{ query?: string; page?: string | number }>;
 };
 
-const TagsPageId = async ({ params, searchParams }: TagsPageIdProps): Promise<JSX.Element> => {
+const TagsPageId = ({ params, searchParams }: TagsPageIdProps) => {
+	return (
+		<>
+			<Suspense fallback={<TagsPageIdSekleton />}>
+				<MainTagsPageId params={params} searchParams={searchParams} />
+			</Suspense>
+		</>
+	);
+};
+
+const MainTagsPageId = async ({ params, searchParams }: TagsPageIdProps): Promise<JSX.Element> => {
 	const csp = await searchParams;
 	const { id } = await params;
 	const query = csp?.query || "";
@@ -56,5 +66,18 @@ const TagsPageId = async ({ params, searchParams }: TagsPageIdProps): Promise<JS
 		</>
 	);
 };
+
+const TagsPageIdSekleton = () => (
+	<>
+		<div className="flex justify-center items-center gap-4">
+			<FireIcon className="w-6 text-red-500" />
+			<h1 className="text-2xl font-bold">Loading...</h1>
+		</div>
+		<div className="my-8 grid grid-cols-1 gap-4 md:grid-cols-6 md:gap-6">
+			<SkeletonKomik />
+		</div>
+		<div className="flex justify-center mt-4"></div>
+	</>
+);
 
 export default TagsPageId;

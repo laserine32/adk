@@ -14,14 +14,22 @@ export const generateMetadata = async ({ params }: { params: Promise<{ id: strin
 	};
 };
 
-const OnlineViewPage = async ({ params }: { params: Promise<{ id: string }> }) => {
+const OnlineViewPage = ({ params }: { params: Promise<{ id: string }> }) => {
+	return (
+		<>
+			<Suspense fallback={<SkeletonView />}>
+				<MainOnlineViewPage params={params} />
+			</Suspense>
+		</>
+	);
+};
+
+const MainOnlineViewPage = async ({ params }: { params: Promise<{ id: string }> }) => {
 	const { id } = await params;
 	const data = await getGallery(Number(id));
 	return (
 		<>
-			<Suspense key={id} fallback={<SkeletonView />}>
-				<ViewMangaOnline komik={data} />
-			</Suspense>
+			<ViewMangaOnline komik={data} />
 		</>
 	);
 };

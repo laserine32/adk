@@ -1,4 +1,3 @@
-import MainFallback from "@/components/main-fallback";
 import Navbar from "@/components/navbar";
 import ProgressBar from "@/components/progress-bar";
 import ScrollTop from "@/components/scroll-top";
@@ -12,9 +11,9 @@ const MainLayout = ({
 	return (
 		<>
 			<Navbar />
-			<Suspense fallback={<MainFallback />}>
+			<div className="py-4 px-2 md:px-10">{children}</div>
+			<Suspense>
 				<ProgressBar />
-				<div className="py-4 px-2 md:px-10">{children}</div>
 				<ScrollTop />
 			</Suspense>
 		</>

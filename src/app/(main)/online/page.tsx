@@ -21,13 +21,27 @@ type HomeProps = {
 export const generateMetadata = async ({ searchParams }: HomeProps) => {
 	const csp = await searchParams;
 	const query = csp?.query || "";
-	const title = query == "" ? `Online` : `Search result for "Query" | Online`;
+	const title = query == "" ? `Online` : `Search result for "${query}" | Online`;
 	return {
 		title: `${title}`,
 	};
 };
 
-const OnlinePage = async ({ searchParams }: HomeProps): Promise<JSX.Element> => {
+const OnlinePage = ({ searchParams }: HomeProps) => {
+	return (
+		<>
+			<div className="flex justify-center items-center gap-4">
+				<FireIcon className="w-6 text-red-500" />
+				<h1 className="text-2xl font-bold">Online</h1>
+			</div>
+			<Suspense fallback={<SkeletonKomik />}>
+				<MainOnlinePage searchParams={searchParams} />
+			</Suspense>
+		</>
+	);
+};
+
+const MainOnlinePage = async ({ searchParams }: HomeProps): Promise<JSX.Element> => {
 	const csp = await searchParams;
 	const query = csp?.query || "";
 	const sort: onlineSortType = csp?.sort || "date";
@@ -36,19 +50,15 @@ const OnlinePage = async ({ searchParams }: HomeProps): Promise<JSX.Element> => 
 	const totalPage = data.num_pages;
 	return (
 		<>
-			<div className="flex justify-center items-center gap-4">
-				<FireIcon className="w-6 text-red-500" />
-				<h1 className="text-2xl font-bold">Online</h1>
-			</div>
-			<Suspense key={query + currentPage} fallback={<SkeletonKomik />}>
+			<Suspense key={`${query} ${sort} ${currentPage}`} fallback={<SkeletonKomik />}>
 				<div className="flex justify-center items-center gap-4 my-4">
 					<SortOnline />
 				</div>
 				<ChapterListOnline data={data} />
+				<div className="flex justify-center my-28">
+					<Pagination totalPages={totalPage} />
+				</div>
 			</Suspense>
-			<div className="flex justify-center my-28">
-				<Pagination totalPages={totalPage} />
-			</div>
 		</>
 	);
 };

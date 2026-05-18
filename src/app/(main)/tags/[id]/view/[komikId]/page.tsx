@@ -19,14 +19,22 @@ export const generateMetadata = async ({ params }: { params: TypeParams }) => {
 	};
 };
 
-const TagViewPage = async ({ params }: { params: TypeParams }) => {
+const TagViewPage = ({ params }: { params: TypeParams }) => {
+	return (
+		<>
+			<Suspense fallback={<SkeletonView />}>
+				<MainTagViewPage params={params} />
+			</Suspense>
+		</>
+	);
+};
+
+const MainTagViewPage = async ({ params }: { params: TypeParams }) => {
 	const { id, komikId } = await params;
 	const data = await getKomikPageTag(Number(komikId), Number(id));
 	return (
 		<>
-			<Suspense key={id} fallback={<SkeletonView />}>
-				<ViewManga komik={data} />
-			</Suspense>
+			<ViewManga komik={data} />
 		</>
 	);
 };

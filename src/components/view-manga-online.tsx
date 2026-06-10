@@ -1,11 +1,12 @@
 import NotFound from "@/app/not-found";
-import { GalleryType, getCDN, NHTag, NHTitle } from "@/lib/nhapi";
+import { GalleryType, getCDN, NHTag, NHTitle, relatedType } from "@/lib/nhapi";
 import { capitalizeFirstLetter, formatUnixTimeAgo, getRandomInt, unicodeToChar } from "@/lib/utils";
 import Link from "next/link";
 import LazyImage from "./lazy-image";
 import { JSX } from "react";
+import MoreLikeThisOnline from "./more-like-this-online";
 
-const ViewMangaOnline = async ({ komik }: { komik: GalleryType }) => {
+const ViewMangaOnline = async ({ komik, related }: { komik: GalleryType; related: relatedType[] }) => {
 	if (!komik) {
 		return (
 			<>
@@ -56,6 +57,7 @@ const ViewMangaOnline = async ({ komik }: { komik: GalleryType }) => {
 					);
 				})}
 			</div>
+			<MoreLikeThisOnline data={related} thumb_servers={thumb_servers} />
 		</>
 	);
 };

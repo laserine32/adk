@@ -1,6 +1,6 @@
 import SkeletonView from "@/components/skeleton-view";
 import ViewMangaOnline from "@/components/view-manga-online";
-import { getGallery } from "@/lib/nhapi";
+import { getGallery, getRelated } from "@/lib/nhapi";
 import { Suspense } from "react";
 
 export const revalidate = 3600;
@@ -27,9 +27,10 @@ const OnlineViewPage = ({ params }: { params: Promise<{ id: string }> }) => {
 const MainOnlineViewPage = async ({ params }: { params: Promise<{ id: string }> }) => {
 	const { id } = await params;
 	const data = await getGallery(Number(id));
+	const related = await getRelated(Number(id));
 	return (
 		<>
-			<ViewMangaOnline komik={data} />
+			<ViewMangaOnline komik={data} related={related.result} />
 		</>
 	);
 };

@@ -66,6 +66,22 @@ export interface GalleryType {
 	pages: Page[] | [];
 }
 export type onlineSortType = "date" | "popular" | "popular-today" | "popular-week" | "popular-month";
+export interface relatedType {
+	id: number;
+	media_id: string;
+	english_title: string;
+	japanese_title: string;
+	thumbnail: string;
+	thumbnail_width: number;
+	thumbnail_height: number;
+	num_pages: number;
+	num_favorites: number;
+	tag_ids: number[];
+	blacklisted: boolean;
+}
+export type apiRelatedType = {
+	result: relatedType[];
+};
 
 export async function fetchData<T>(url: string, defaultValue: T): Promise<T> {
 	try {
@@ -155,6 +171,26 @@ export const getPageByTag = async (tagId: number, page: number, sort: onlineSort
 			total: 0,
 		},
 	);
+};
+
+export const getRelated = async (id: number) => {
+	return await fetchData<apiRelatedType>(`${atob(API_URL)}/api/v2/galleries/${id}/related`, {
+		result: [
+			{
+				id: 0,
+				media_id: "string",
+				english_title: "string",
+				japanese_title: "string",
+				thumbnail: "string",
+				thumbnail_width: 0,
+				thumbnail_height: 0,
+				num_pages: 0,
+				num_favorites: 0,
+				tag_ids: [],
+				blacklisted: false,
+			},
+		],
+	});
 };
 
 export const getLanguage = (id: number[]) => {

@@ -1,10 +1,10 @@
-import React, { JSX, Suspense } from "react";
+import { JSX, Suspense } from "react";
 import Pagination from "@/components/pagination";
-import SkeletonKomik from "@/components/skeleton-komik";
 import { FireIcon } from "@heroicons/react/24/solid";
 import { getMainPage, onlineSortType } from "@/lib/nhapi";
 import ChapterListOnline from "@/components/chapter-list-online";
 import SortOnline from "@/components/sort-online";
+import { SkeletonKomikOnline } from "@/components/skeleton-komik-online";
 
 export const revalidate = 3600;
 
@@ -34,7 +34,7 @@ const OnlinePage = ({ searchParams }: HomeProps) => {
 				<FireIcon className="w-6 text-red-500" />
 				<h1 className="text-2xl font-bold">Online</h1>
 			</div>
-			<Suspense fallback={<SkeletonKomik />}>
+			<Suspense fallback={<SkeletonKomikOnline />}>
 				<MainOnlinePage searchParams={searchParams} />
 			</Suspense>
 		</>
@@ -50,7 +50,7 @@ const MainOnlinePage = async ({ searchParams }: HomeProps): Promise<JSX.Element>
 	const totalPage = data.num_pages;
 	return (
 		<>
-			<Suspense key={`${query} ${sort} ${currentPage}`} fallback={<SkeletonKomik />}>
+			<Suspense key={`${query} ${sort} ${currentPage}`} fallback={<SkeletonKomikOnline />}>
 				<div className="flex justify-center items-center gap-4 my-4">
 					<SortOnline />
 				</div>

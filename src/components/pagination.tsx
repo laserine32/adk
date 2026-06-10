@@ -68,7 +68,7 @@ const PaginationNumber: FC<PaginationNumberProps> = ({ page, href, position, isA
 	const className: string = clsx("linking flex h-10 w-10 items-center justify-center text-sm border border-dialect", {
 		"rounded-l-sm": position === "first" || position === "single",
 		"rounded-r-sm": position === "last" || position === "single",
-		"z-10 bg-primary text-primary-foreground boder-border": isActive,
+		"z-10 bg-dialect text-primary-foreground boder-border": isActive,
 		"hover:bg-primary hover:text-primary-foreground": !isActive && position !== "middle",
 		"text-secondary-foreground pointer-events-none": position === "middle",
 	});

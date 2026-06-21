@@ -5,6 +5,7 @@ import Link from "next/link";
 import LazyImage from "./lazy-image";
 import { JSX } from "react";
 import MoreLikeThisOnline from "./more-like-this-online";
+import SaveOnline from "./save-online";
 
 const ViewMangaOnline = async ({ komik, related }: { komik: GalleryType; related: relatedType[] }) => {
 	if (!komik) {
@@ -30,20 +31,16 @@ const ViewMangaOnline = async ({ komik, related }: { komik: GalleryType; related
 					<h1 className="text-xl font-bold mb-6">
 						<ExpandTitle title={komik.title} />
 					</h1>
-					<h3 className=" mb-6 text-foreground">{unicodeToChar(komik.title.japanese)}</h3>
+					<h3 className=" mb-6 text-foreground/60">{unicodeToChar(komik.title.japanese)}</h3>
 					<div className="my-4 flex-row w-full">
 						<RenderTags data={komik.tags} />
-						<div className="my-2 flex gap-1">
-							<h3>Pages</h3>
-							<div className="flex gap-1 flex-wrap">
-								<Badge text={`${komik.num_pages}`} />
-							</div>
-						</div>
+						<TagsRender title="Pages" data={`${komik.num_pages}`} />
 						<div className="my-2 flex gap-1">
 							<h3>Uploaded</h3>
-							<p>{formatUnixTimeAgo(`${komik.upload_date}`)}</p>
+							<p className="text-foreground/60">{formatUnixTimeAgo(`${komik.upload_date}`)}</p>
 						</div>
 					</div>
+					<SaveOnline data={komik} image_servers={image_servers} thumb_servers={thumb_servers} />
 				</div>
 			</div>
 			<div className="flex flex-col justify-center items-center md:flex-row-reverse md:items-center md:flex-wrap md:gap-2">
@@ -118,15 +115,17 @@ const RenderTags = ({ data }: { data: NHTag[] }) => {
 	return <>{elm.map((e) => e)}</>;
 };
 
-const TagsRender = ({ title, data }: { title: string; data: NHTag[] }) => {
+const TagsRender = ({ title, data }: { title: string; data: NHTag[] | string }) => {
 	return (
 		<>
-			<div className="my-2 flex gap-1">
-				<h3>{title}</h3>
+			<div className="my-2 flex items-center gap-1">
+				<h3 className="min-w-18 md:min-w-24">{title}</h3>
 				<div className="flex gap-1 flex-wrap">
-					{data.map((tag, i) => (
-						<Tag key={i} data={tag} />
-					))}
+					{typeof data == "string" ? (
+						<Badge text={data.toString()} count={-1} />
+					) : (
+						data.map((tag, i) => <Tag key={i} data={tag} />)
+					)}
 				</div>
 			</div>
 		</>

@@ -7,7 +7,7 @@ const MoreLikeThisOnline = ({ data, thumb_servers }: { data: relatedType[]; thum
 		<>
 			<div className="my-4 bg-border rounded p-4 flex flex-col">
 				<h1 className="text-xl font-bold mb-6 text-center">More Like This</h1>
-				<div className="my-4 grid grid-cols-5 gap-4">
+				<div className="my-4 grid grid-cols-2 md:grid-cols-5 gap-4">
 					{data.map((e, i) => {
 						const cdn_thumb = thumb_servers[i % thumb_servers.length];
 						const imgsrc = `${cdn_thumb}/${e.thumbnail}`;

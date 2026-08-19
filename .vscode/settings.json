@@ -1,0 +1,22 @@
+{
+	"files.associations": {
+		"*.css": "tailwindcss"
+	},
+	"editor.codeActionsOnSave": {
+		"source.fixAll.prettier": "explicit",
+		"source.fixAll.eslint": "explicit"
+	},
+	"workbench.editor.customLabels.enabled": true,
+	"workbench.editor.customLabels.patterns": {
+		"**/src/routes/**/[[]*[]]/+page.svelte": "${dirname(1)} - ${dirname} - Page",
+		"**/src/routes/**/[[]*[]]/+page.server.ts": "${dirname(1)} - ${dirname} - Server",
+		// "**/src/routes/**/(*)/*+page.svelte": "${dirname(1)} Page",
+		"**/src/routes/**/+page.svelte": "${dirname} - Page",
+		// "**/src/routes/**/+page.svelte": "${dirname} - Page",
+		"**/src/routes/**/+layout.svelte": "${dirname} - Layout",
+		"**/src/routes/**/+server.ts": "${dirname} - Server (TS)",
+		"**/src/routes/**/+page.server.ts": "${dirname} - Server (TS)",
+		"**/src/routes/**/+server.js": "${dirname} - Server (JS)",
+		"**/src/routes/**/+error.svelte": "${dirname} - Error"
+	}
+}

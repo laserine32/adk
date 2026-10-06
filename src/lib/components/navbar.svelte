@@ -98,7 +98,7 @@
 		<div class={cn(isOpen ? 'block' : 'hidden', 'space-y-1 px-2 pt-2 pb-3')}>
 			{#each navigation as item (item.name)}
 				<a
-					href={resolve(`/${item.href}` as `/`)}
+					href={resolve(`${item.href}` as `/`)}
 					aria-current={item.current ? 'page' : undefined}
 					class={cn(
 						item.current ? 'bg-input text-white' : 'text-gray-300 hover:bg-input hover:text-white',

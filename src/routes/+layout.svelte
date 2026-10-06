@@ -3,11 +3,11 @@
 	import favicon from '$lib/assets/favicon.ico';
 	import Navbar from '$lib/components/navbar.svelte';
 	import LoadingBar from '$lib/components/loading-bar.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	let { children } = $props();
 
-	let pageTitle = $derived($page.data.title);
+	let pageTitle = $derived(page.data.title);
 	let finalTitle = $derived(pageTitle ? `${pageTitle} | ADK` : 'ADK');
 </script>
 

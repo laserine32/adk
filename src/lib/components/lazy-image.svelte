@@ -13,4 +13,4 @@
 </script>
 
 <img src={blankImg} data-src={data.src} class={data.className} {alt} use:lazyLoad />
-<div class="image-container"></div>
+<!-- <div class="image-container"></div> -->

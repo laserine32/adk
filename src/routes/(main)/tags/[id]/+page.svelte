@@ -11,14 +11,16 @@
 	<h1 class="text-2xl font-bold">{data.tag.name}</h1>
 </div>
 <div class="my-8 grid grid-cols-1 gap-4 md:grid-cols-6 md:gap-6">
-	{#await data.komik}
+	{#await data.streamed.komikPromise}
 		<SkeletonKomik />
 	{:then komik}
 		{#each komik as item (item.id)}
-			<ChapterList data={item} pathName={`/tags/${data.tag.id}`} image_cdn={data.image_cdn} />
+			<ChapterList data={item} pathName="" />
 		{/each}
 	{/await}
 </div>
 <div class="my-28 flex justify-center">
-	<Pagination totalPages={data.totalPage} />
+	{#await data.streamed.totalPagePromise then totalPage}
+		<Pagination totalPages={totalPage} />
+	{/await}
 </div>

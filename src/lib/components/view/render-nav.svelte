@@ -18,6 +18,7 @@
 	<div class="sticky bottom-0">
 		<div class="grid grid-cols-3">
 			<a
+				data-sveltekit-reload
 				href={resolve(`/${prev}` as `/`)}
 				class={cn(
 					'linking flex items-center justify-center gap-2 rounded-l-md bg-dialect py-2.5 text-white hover:bg-muted',
@@ -28,6 +29,7 @@
 				<p class="hidden md:block">Next Comic</p>
 			</a>
 			<a
+				data-sveltekit-reload
 				href={resolve(`${list}` as `/`)}
 				class="linking flex items-center justify-center gap-2 bg-background py-2.5 text-primary-foreground hover:bg-muted"
 			>
@@ -35,6 +37,7 @@
 				<ListBulletIcon className="size-6 block md:hidden" />
 			</a>
 			<a
+				data-sveltekit-reload
 				href={resolve(`/${next}` as `/`)}
 				class={cn(
 					'linking flex items-center justify-center gap-2 rounded-r-md bg-dialect py-2.5 text-white hover:bg-muted',

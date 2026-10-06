@@ -28,6 +28,7 @@ export const komik = pgTable(
 		numPages: integer('num_pages').default(0).notNull(),
 		numFavorites: integer('num_favorites').default(0).notNull(),
 		cover: text().default('').notNull(),
+		newCover: text('new_cover').default('').notNull(),
 		date: timestamp({ precision: 3, mode: 'string' })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
@@ -44,6 +45,7 @@ export const pages = pgTable(
 		id: text().primaryKey().notNull(),
 		komikId: integer().notNull(),
 		img: text().notNull(),
+		newImg: text('new_img').default('').notNull(),
 		num: integer().notNull()
 	},
 	(table) => [

@@ -19,7 +19,7 @@
 {#if data.query != ''}
 	<p>Search result for: "{data.query}"</p>
 {/if}
-<div class="my-8 grid grid-cols-1 gap-4 md:grid-cols-6 md:gap-6">
+<div data-sveltekit-reload class="my-8 grid grid-cols-1 gap-4 md:grid-cols-6 md:gap-6">
 	{#await data}
 		<SkeletonKomik />
 	{:then data}

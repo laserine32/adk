@@ -24,7 +24,7 @@
 </script>
 
 {#if index === -1}
-	<span class="text-foreground/5">{english}</span>
+	<span class="text-foreground">{english}</span>
 {/if}
 {#if result.length > 0}
 	{#each result as item, index (`${index}`)}

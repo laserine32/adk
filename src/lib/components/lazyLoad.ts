@@ -13,8 +13,8 @@ export function lazyLoad(node: HTMLImageElement): { destroy: () => void } {
 			});
 		},
 		{
-			rootMargin: '200px'
-			// rootMargin: '5000px 0px'
+			// rootMargin: '200px'
+			rootMargin: '5000px 0px'
 		} satisfies IntersectionObserverInit
 	);
 

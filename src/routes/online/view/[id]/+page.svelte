@@ -64,7 +64,10 @@
 			tagsId: e.id
 		}))
 	}}
-	<div class="my-4 grid grid-cols-1 gap-4 rounded bg-border p-4 md:grid-cols-2">
+	<div
+		data-sveltekit-reload
+		class="my-4 grid grid-cols-1 gap-4 rounded bg-border p-4 md:grid-cols-2"
+	>
 		<div class="flex items-center justify-center">
 			<img src={imgsrc} class="w-1/2" alt={data.komik.title.english} loading="lazy" />
 		</div>
@@ -131,7 +134,8 @@
 		</div>
 	</div>
 	<div
-		class="flex flex-col items-center justify-center md:flex-row-reverse md:flex-wrap md:items-center md:gap-2"
+		data-sveltekit-reload
+		class="flex flex-col justify-center md:flex-row-reverse md:flex-wrap md:gap-2"
 	>
 		{#each data.komik.pages as page, index (`${index}${page.number}`)}
 			{@const cdn_thumb = image_servers[index % image_servers.length]}
@@ -141,11 +145,16 @@
 			</div>
 		{/each}
 	</div>
-	<div class="my-4 flex flex-col rounded bg-border p-4">
+	<div data-sveltekit-reload class="my-4 flex flex-col rounded bg-border p-4">
 		<h1 class="mb-6 text-center text-xl font-bold">More Like This</h1>
 		<div class="my-4 grid grid-cols-2 gap-4 md:grid-cols-5">
 			{#each data.related.result as related, index (index)}
-				<ChapterListOnline data={related} pathName="/online" image_cdn={data.image_cdn} />
+				<ChapterListOnline
+					data={related}
+					pathName="/online"
+					image_cdn={data.image_cdn}
+					isResponsive={false}
+				/>
 			{/each}
 		</div>
 	</div>

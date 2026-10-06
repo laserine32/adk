@@ -142,9 +142,26 @@ export async function getKomik(id: number) {
 	return data;
 }
 
+export async function getKomikTitle(id: number) {
+	const [data] = await db.select({ title: komik.title }).from(komik).where(eq(komik.id, id));
+	return data.title ?? 'Not Found';
+}
+
+export async function getKomikTagTitle(idTag: number, idKomik: number) {
+	const [data] = await db
+		.select({ title: komik.title, tagTitle: tags.name })
+		.from(tagsOnKomik)
+		.leftJoin(komik, eq(tagsOnKomik.komikId, komik.id))
+		.leftJoin(tags, eq(tags.id, tagsOnKomik.tagsId))
+		.where(and(eq(tagsOnKomik.komikId, idKomik), eq(tagsOnKomik.tagsId, idTag)));
+	if (!data) return `Not Found`;
+	return `Tag: ${data.tagTitle} - ${data.title}`;
+}
+
 type PagesMinType = {
 	id: string;
 	img: string;
+	newImg: string;
 	num: number;
 };
 
@@ -155,6 +172,7 @@ type KomikWithPage = {
 	japaneseTitle: string;
 	date: string;
 	cover: string;
+	newCover: string;
 	numPages: number;
 	tags: TagsMinType[];
 	pages: PagesMinType[];
@@ -189,6 +207,7 @@ export async function getRawKomikPage(id: number) {
 				japaneseTitle: k.japaneseTitle,
 				date: k.date,
 				cover: k.cover,
+				newCover: k.newCover,
 				numPages: k.numPages,
 				tags: [],
 				pages: []
@@ -212,6 +231,7 @@ export async function getRawKomikPage(id: number) {
 				const tmpp = {
 					id: p.id,
 					img: p.img,
+					newImg: p.newImg,
 					num: p.num
 				};
 				dataPages.push(tmpp);
@@ -267,6 +287,7 @@ export async function getKomikPageTag(id: number, tagId: number = -1): Promise<K
 		.select({
 			id: pages.id,
 			img: pages.img,
+			newImg: pages.newImg,
 			num: pages.num
 		})
 		.from(pages)
@@ -281,6 +302,7 @@ export async function getKomikPageTag(id: number, tagId: number = -1): Promise<K
 		japaneseTitle: inikomik.japaneseTitle,
 		date: inikomik.date,
 		cover: inikomik.cover,
+		newCover: inikomik.newCover,
 		numPages: inikomik.numPages,
 		tags: dataTags,
 		pages: dataPages
@@ -334,6 +356,7 @@ export async function getKomikPage(id: number): Promise<KomikPage> {
 		.select({
 			id: pages.id,
 			img: pages.img,
+			newImg: pages.newImg,
 			num: pages.num
 		})
 		.from(pages)
@@ -348,6 +371,7 @@ export async function getKomikPage(id: number): Promise<KomikPage> {
 		japaneseTitle: inikomik.japaneseTitle,
 		date: inikomik.date,
 		cover: inikomik.cover,
+		newCover: inikomik.newCover,
 		numPages: inikomik.numPages,
 		tags: dataTags,
 		pages: dataPages

@@ -13,10 +13,11 @@
 		data: ResultNHMainPageType | relatedType;
 		pathName: string;
 		image_cdn: CDNType;
+		isResponsive?: boolean;
 	}
 
-	const { data, pathName, image_cdn }: CardProps = $props();
-	let isMobi = $state(isMobile());
+	const { data, pathName, image_cdn, isResponsive = true }: CardProps = $props();
+	let isMobi = $derived(isMobile() && isResponsive);
 	let linkhref = $derived(`${pathName}/view/${data.id}`);
 	const { thumb_servers } = $derived(image_cdn);
 	const imgsrc = $derived.by(() => {
@@ -27,7 +28,7 @@
 	let language = $derived(tagLanguage ? tagLanguage.flag : ``);
 	$effect(() => {
 		function handleResize() {
-			isMobi = isMobile();
+			isMobi = isMobile() && isResponsive;
 		}
 
 		window.addEventListener('resize', handleResize);

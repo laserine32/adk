@@ -1,3 +1,4 @@
+import { getCDN } from '$lib/nhapi';
 import { getKomikgetSearchPagin, getKomikTotalPage } from '$lib/server/db/queries/komik';
 import type { PageServerLoad } from './$types';
 
@@ -7,7 +8,8 @@ export const load: PageServerLoad = ({ url }) => {
 	return {
 		streamed: {
 			komikPromise: getKomikgetSearchPagin(query, currentPage),
-			totalPagePromise: getKomikTotalPage(query)
+			totalPagePromise: getKomikTotalPage(query),
+			image_cdn: getCDN()
 		}
 	};
 };

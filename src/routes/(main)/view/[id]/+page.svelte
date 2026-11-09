@@ -10,6 +10,18 @@
 
 	const { data } = $props();
 	let isDebug = $state(false);
+	const { image_servers, thumb_servers } = $derived(data.image_cdn);
+	const getImgCDN = (img: string | undefined) => {
+		if (img === undefined) {
+			return img;
+		}
+		let cdn_thumb = thumb_servers[Math.floor(Math.random() * thumb_servers.length)];
+		const testurl = img.split('/')[2][0];
+		if (testurl == 'i') {
+			cdn_thumb = image_servers[Math.floor(Math.random() * image_servers.length)];
+		}
+		return cdn_thumb + '/' + img.split('/').slice(-3).join('/');
+	};
 </script>
 
 {#await data.streamed.komikPromise}
@@ -29,7 +41,12 @@
 		class="my-4 grid grid-cols-1 gap-4 rounded bg-border p-4 md:grid-cols-2"
 	>
 		<div class="flex items-center justify-center">
-			<img src={komik?.newCover} class="w-1/2" alt={komik?.title} loading="lazy" />
+			<img
+				src={komik?.newCover ?? getImgCDN(komik?.cover)}
+				class="w-1/2"
+				alt={komik?.title}
+				loading="lazy"
+			/>
 		</div>
 		<div>
 			<h1 class="mb-6 text-xl font-bold">
@@ -58,7 +75,12 @@
 						{`${page.num} ~ ${page.newImg.slice(-10)}`}
 					</p>
 				{/if}
-				<LazyImage src={page.newImg} alt={`${page.num}`} className="w-full mb-1" />
+				<LazyImage
+					src={page.newImg ?? getImgCDN(page.img)}
+					alt={`${page.num}`}
+					className="w-full mb-1"
+					fallback={getImgCDN(page.img)}
+				/>
 			</div>
 		{/each}
 	</div>

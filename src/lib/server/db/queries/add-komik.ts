@@ -3,11 +3,14 @@ import { desc, eq, sql } from 'drizzle-orm';
 import { db } from '..';
 import { komik, pages, tags, tagsOnKomik } from '../schema';
 
+export type TypeAddpages = typeof pages.$inferInsert;
+export type TypeAddtags = typeof tags.$inferInsert;
+export type TypeAddtagsOnKomik = typeof tagsOnKomik.$inferInsert;
 export type KomikAddApi = {
 	komik: typeof komik.$inferInsert;
-	pages: typeof pages.$inferInsert;
-	tags: typeof tags.$inferInsert;
-	tagsOnKomik: typeof tagsOnKomik.$inferInsert;
+	pages: TypeAddpages[];
+	tags: TypeAddtags[];
+	tagsOnKomik: TypeAddtagsOnKomik[];
 };
 
 async function getAndValidateNumId() {
@@ -16,24 +19,10 @@ async function getAndValidateNumId() {
 		.from(komik)
 		.orderBy(desc(komik.numId))
 		.limit(1);
-	// const numId = async (n: number) => {
-	// 	for (let nn = n; nn <= n + 100; nn++) {
-	// 		const check = await db.$count(komik, eq(komik.numId, n + nn));
-	// 		if (check == 0) {
-	// 			return nn;
-	// 		}
-	// 	}
-	// 	return n;
-	// };
-	// return await numId(data);
 	return data + 1;
 }
 
 async function insertKomik(data: typeof komik.$inferInsert) {
-	// const check = await db.$count(komik, eq(komik.id, data.id));
-	// if(check > 0){
-	//   throw new Error(`The Komik has already been saved.`);
-	// }
 	data.numId = await getAndValidateNumId();
 	await db.insert(komik).values(data).onConflictDoNothing();
 	await db.execute(sql`
@@ -52,7 +41,6 @@ async function insertKomik(data: typeof komik.$inferInsert) {
 
 export async function addKomikApi(data: KomikAddApi): Promise<boolean> {
 	try {
-		// const { komik, pages, tags, tagsOnKomik } = data
 		await insertKomik(data.komik);
 		await db.insert(pages).values(data.pages).onConflictDoNothing();
 		await db.insert(tags).values(data.tags).onConflictDoNothing();
